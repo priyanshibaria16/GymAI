@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}AI Automations | Admin{% endblock %}
+
+{% block content %}
+<section class="breadcrumb-section set-bg" data-setbg="{% static 'img/breadcrumb-bg.jpg' %}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="breadcrumb-text">
+                    <h2>AI Automations Center</h2>
+                    <div class="bt-option">
+                        <a href="{% url 'admin-dashboard' %}">Admin</a>
+                        <span>AI Automations</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="spad" style="background:#151515;">
+    <div class="container">
+        <!-- Header + Regenerate -->
+        <div class="row align-items-center mb-4">
+            <div class="col-md-8">
+                <h3 style="color:#fff; font-family:'Oswald',sans-serif; margin:0;">
+                    <i class="fa fa-magic" style="color:#825ee4;"></i> ADMIN AI AUTOMATIONS
+                </h3>
+                <p style="color:#a0a0a0; margin:4px 0 0 0; font-size:14px;">
+                    Automated executive briefing &amp; churn-retention outreach, powered by Gemini.
+                </p>
+            </div>
+            <div class="col-md-4 text-md-right mt-3 mt-md-0">
+                <a href="?regen=1" class="btn px-3 py-2" style="background:#5e72e4; color:#fff; font-weight:700;">
+                    <i class="fa fa-refresh"></i> Regenerate All
+                </a>
+            </div>
+        </div>
+
+        {% if briefing.source != 'gemini' %}
+        <div class="alert" style="background:rgba(243,156,18,0.12); border:1px solid rgba(243,156,18,0.4); color:#f39c12; border-radius:10px; font-size:13px;">
+            <i class="fa fa-info-circle"></i>
+            Live Gemini unavailable — showing a <strong>local rule-based summary</strong>.
+            {% if briefing.error %}<span style="opacity:.8">({{ briefing.error|truncatechars:120 }})</span>{% endif %}
+            Check your <code>GEMINI_API_KEY</code> in <code>.env</code> for AI-generated text.
+        </div>
+        {% endif %}
+
+        <!-- Executive Briefing -->
+        <div style="background:linear-gradient(135deg,#1c1c2e,#28273c); border:1px solid rgba(130,94,228,0.35); border-radius:12px; padding:25px; margin-bottom:30px;">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                <h4 style="color:#fff; font-family:'Oswald',sans-serif; margin:0;">
+                    <i class="fa fa-file-text-o" style="color:#2dce89;"></i> Executive Daily Briefing
+                </h4>
+                <span style="background:{% if briefing.source == 'gemini' %}rgba(45,206,137,0.18); color:#2dce89{% else %}rgba(243,156,18,0.18); color:#f39c12{% endif %}; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:700;">
+                    {% if briefing.source == 'gemini' %}<i class="fa fa-bolt"></i> LIVE · {{ briefing.model }}{% else %}<i class="fa fa-database"></i> LOCAL SUMMARY{% endif %}
+                </span>
+            </div>
+            <div style="color:#d8d8e0; font-size:14px; line-height:1.65; white-space:pre-wrap;">{{ briefing.text }}</div>
+        </div>
+
+        <!-- Metrics snapshot -->
+        <div class="row mb-5">
+            <div class="col-6 col-md-3 mb-3">
+                <div style="background:#1c1c2e; border-radius:10px; padding:18px; text-align:center;">
+                    <h3 style="color:#5e72e4; font-family:'Oswald',sans-serif; margin:0;">₹{{ metrics.month_revenue }}</h3>
+                    <small style="color:#a0a0a0;">Revenue (30d)</small>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+                <div style="background:#1c1c2e; border-radius:10px; padding:18px; text-align:center;">
+                    <h3 style="color:#f39c12; font-family:'Oswald',sans-serif; margin:0;">₹{{ metrics.pending_revenue }}</h3>
+                    <small style="color:#a0a0a0;">Pending Dues</small>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+                <div style="background:#1c1c2e; border-radius:10px; padding:18px; text-align:center;">
+                    <h3 style="color:#f5365c; font-family:'Oswald',sans-serif; margin:0;">{{ metrics.high_risk }}</h3>
+                    <small style="color:#a0a0a0;">High-Risk Members</small>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+                <div style="background:#1c1c2e; border-radius:10px; padding:18px; text-align:center;">
+                    <h3 style="color:#2dce89; font-family:'Oswald',sans-serif; margin:0;">{{ metrics.occupancy_pct }}%</h3>
+                    <small style="color:#a0a0a0;">Class Occupancy</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Retention Drafts -->
+        <div style="background:#1c1c2e; border-radius:12px; padding:25px;">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                <h4 style="color:#fff; font-family:'Oswald',sans-serif; margin:0;">
+                    <i class="fa fa-heartbeat" style="color:#f5365c;"></i> Churn Retention Outreach
+                </h4>
+                <span style="color:#a0a0a0; font-size:13px;">
+                    {% if retention.source == 'gemini' %}<span style="color:#2dce89;">Gemini-personalized drafts</span>{% else %}<span style="color:#f39c12;">Template drafts (AI unavailable)</span>{% endif %}
+                </span>
+            </div>
+
+            {% if retention.drafts %}
+            <div class="row">
+                {% for d in retention.drafts %}
+                <div class="col-lg-6 mb-4">
+                    <div style="background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.07); border-left:4px solid #f5365c; border-radius:10px; padding:18px; height:100%;">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <strong style="color:#fff; font-size:15px;">{{ d.name }}</strong>
+                                {% if d.personalized %}<i class="fa fa-bolt" title="AI personalized" style="color:#825ee4; font-size:11px; margin-left:6px;"></i>{% endif %}
+                            </div>
+                            <span style="background:rgba(245,54,92,0.2); color:#f5365c; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700;">{{ d.risk_probability }}% risk</span>
+                        </div>
+                        <div style="color:#a0a0a0; font-size:12px; margin-bottom:10px;">
+                            <i class="fa fa-clock-o"></i> {{ d.days_inactive }}d inactive
+                            &nbsp;·&nbsp; <i class="fa fa-calendar"></i> {{ d.tenure_months }}mo tenure
+                            &nbsp;·&nbsp; <i class="fa fa-inr"></i> ₹{{ d.pending_amount }} pending
+                        </div>
+                        <div class="retention-msg" id="msg-{{ forloop.counter }}" style="color:#e6e6ee; font-size:13px; line-height:1.55; background:rgba(255,255,255,0.03); border-radius:8px; padding:12px; margin-bottom:10px;">{{ d.message }}</div>
+                        <button type="button" class="btn btn-sm" style="background:#2dce89; color:#fff; font-weight:700; font-size:12px;" onclick="copyMsg('msg-{{ forloop.counter }}', this)">
+                            <i class="fa fa-copy"></i> Copy message
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div style="text-align:center; padding:40px; color:#707080;">
+                <i class="fa fa-smile-o" style="font-size:40px; opacity:.4; display:block; margin-bottom:10px;"></i>
+                No high-risk members detected — retention is healthy right now.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<script>
+function copyMsg(id, btn) {
+    const text = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(text).then(function () {
+        const original = btn.innerHTML;
+        btn.innerHTML = '<i class="fa fa-check"></i> Copied!';
+        setTimeout(function () { btn.innerHTML = original; }, 1500);
+    });
+}
+</script>
+{% endblock content %}

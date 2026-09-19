@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Page Not Found | IronPeak Fitness Studio{% endblock %}
+
+{% block content %}
+<!-- 404 Section Begin -->
+<section class="section-404 spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="text-404 text-center">
+                    <h1 class="ip-404-code">404</h1>
+                    <h3>Looks like this set got skipped.</h3>
+                    <p>The page you are looking for does not exist, was moved or renamed.
+                       No penalties here - let's get you back on track.</p>
+                    <div class="ip-404-actions">
+                        <a href="{% url 'index.html' %}" class="primary-btn btn-normal"><i class="fa fa-home"></i> Back to Home</a>
+                        <a href="{% url 'class_timetable.html' %}" class="primary-btn btn-normal ip-btn-outline">View Class Timetable</a>
+                    </div>
+                    <p class="ip-404-help">Need help? Call <strong>+91 98250 44321</strong> or ask
+                        <a href="{% url 'chatbot' %}">GymBot</a> - our AI assistant.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- 404 Section End -->
+{% endblock content %}

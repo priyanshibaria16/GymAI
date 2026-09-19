@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Admin Control Center | IronPeak Fitness Studio{% endblock %}
+
+{% block content %}
+<section class="breadcrumb-section set-bg" data-setbg="{% static 'img/breadcrumb-bg.jpg' %}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="breadcrumb-text">
+                    <h2>Admin Control Center</h2>
+                    <div class="bt-option">
+                        <a href="{% url 'index.html' %}">Home</a>
+                        <span>Admin Dashboard</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="spad" style="background: #151515;">
+    <div class="container">
+        <!-- Title & Quick Actions Bar -->
+        <div class="row align-items-center mb-4">
+            <div class="col-md-7">
+                <h3 style="color: #fff; font-family: 'Oswald', sans-serif; margin: 0;">ADMINISTRATIVE OVERVIEW</h3>
+                <p style="color: #a0a0a0; margin: 0; font-size: 14px;">Complete system oversight, role management, and financial control</p>
+            </div>
+            <div class="col-md-5 text-md-right mt-3 mt-md-0">
+                <a href="{% url 'admin-user-list' %}" class="btn btn-sm px-3 py-2 mr-2" style="background: #f5365c; color: white; font-weight: 700;">
+                    <i class="fa fa-users"></i> Manage Users
+                </a>
+                <a href="{% url 'admin-class-list' %}" class="btn btn-sm px-3 py-2 mr-2" style="background: #5e72e4; color: white; font-weight: 700;">
+                    <i class="fa fa-calendar-check-o"></i> Manage Classes
+                </a>
+                <a href="{% url 'executive-analytics' %}" class="btn btn-sm px-3 py-2" style="background: #5e72e4; color: white; font-weight: 700;">
+                    <i class="fa fa-line-chart"></i> Executive Analytics
+                </a>
+            </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="row mb-5">
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div style="background: linear-gradient(135deg, #f5365c, #f56036); border-radius: 12px; padding: 25px; color: white; box-shadow: 0 4px 20px rgba(245, 54, 92, 0.3);">
+                    <i class="fa fa-users" style="font-size: 32px; opacity: 0.9;"></i>
+                    <h3 style="font-family: 'Oswald', sans-serif; font-size: 36px; margin: 10px 0 0 0; color: #fff;">{{ total_users }}</h3>
+                    <p style="margin: 0; opacity: 0.9; font-size: 14px;">Total Accounts ({{ member_count }} Members, {{ trainer_count }} Trainers)</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div style="background: linear-gradient(135deg, #2dce89, #2dcecc); border-radius: 12px; padding: 25px; color: white; box-shadow: 0 4px 20px rgba(45, 206, 137, 0.3);">
+                    <i class="fa fa-inr" style="font-size: 32px; opacity: 0.9;"></i>
+                    <h3 style="font-family: 'Oswald', sans-serif; font-size: 36px; margin: 10px 0 0 0; color: #fff;">₹{{ total_revenue }}</h3>
+                    <p style="margin: 0; opacity: 0.9; font-size: 14px;">Completed Revenue (₹{{ pending_revenue }} Pending)</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div style="background: linear-gradient(135deg, #5e72e4, #825ee4); border-radius: 12px; padding: 25px; color: white; box-shadow: 0 4px 20px rgba(94, 114, 228, 0.3);">
+                    <i class="fa fa-calendar-check-o" style="font-size: 32px; opacity: 0.9;"></i>
+                    <h3 style="font-family: 'Oswald', sans-serif; font-size: 36px; margin: 10px 0 0 0; color: #fff;">{{ total_bookings }}</h3>
+                    <p style="margin: 0; opacity: 0.9; font-size: 14px;">Total Class Reservations</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div style="background: linear-gradient(135deg, #f39c12, #e67e22); border-radius: 12px; padding: 25px; color: white; box-shadow: 0 4px 20px rgba(243, 156, 18, 0.3);">
+                    <i class="fa fa-check-square-o" style="font-size: 32px; opacity: 0.9;"></i>
+                    <h3 style="font-family: 'Oswald', sans-serif; font-size: 36px; margin: 10px 0 0 0; color: #fff;">{{ active_users_count }}</h3>
+                    <p style="margin: 0; opacity: 0.9; font-size: 14px;">Active Accounts ({{ today_attendance }} Check-ins)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Automations Card -->
+        {% if ai_briefing %}
+        <div class="row mb-5">
+            <div class="col-lg-12">
+                <div style="background: linear-gradient(135deg, #1c1c2e, #28273c); border:1px solid rgba(130,94,228,0.35); border-radius:12px; padding:25px; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                        <h4 style="color:#fff; font-family:'Oswald',sans-serif; margin:0;">
+                            <i class="fa fa-magic" style="color:#825ee4;"></i> AI Executive Briefing
+                        </h4>
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            {% if ai_briefing.source == 'gemini' %}
+                                <span style="background:rgba(45,206,137,0.18); color:#2dce89; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:700;" title="{{ ai_briefing.model }}">
+                                    <i class="fa fa-bolt"></i> LIVE · Gemini
+                                </span>
+                            {% else %}
+                                <span style="background:rgba(243,156,18,0.18); color:#f39c12; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:700;"
+                                      title="{{ ai_briefing.error }}">
+                                    <i class="fa fa-database"></i> LOCAL SUMMARY
+                                </span>
+                            {% endif %}
+                            <a href="{% url 'admin-automations' %}?regen=1" class="btn btn-sm" style="background:#5e72e4; color:#fff; font-weight:700; font-size:12px;">
+                                <i class="fa fa-refresh"></i> Regenerate
+                            </a>
+                            <a href="{% url 'admin-automations' %}" class="btn btn-sm" style="background:#825ee4; color:#fff; font-weight:700; font-size:12px;">
+                                <i class="fa fa-cogs"></i> Automations Center
+                            </a>
+                        </div>
+                    </div>
+                    <div style="color:#d8d8e0; font-size:14px; line-height:1.6; white-space:pre-wrap;">{{ ai_briefing.text }}</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Management Tables Grid -->
+        <div class="row">
+            <!-- Recent Registered Users -->
+            <div class="col-lg-6 mb-4">
+                <div style="background: #1c1c2e; border-radius: 12px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 style="color: #fff; font-family: 'Oswald', sans-serif; margin: 0;">
+                            <i class="fa fa-user-plus" style="color: #f5365c;"></i> Recent Registrations
+                        </h4>
+                        <a href="{% url 'admin-user-list' %}" style="color: #f5365c; font-size: 12px;">View All &rarr;</a>
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                <th style="padding: 8px; color: #a0a0a0; font-size: 12px;">User</th>
+                                <th style="padding: 8px; color: #a0a0a0; font-size: 12px;">Role</th>
+                                <th style="padding: 8px; color: #a0a0a0; font-size: 12px;">Joined</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for u in recent_users %}
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                <td style="padding: 10px; color: #fff; font-size: 13px;">
+                                    <strong>{{ u.get_full_name|default:u.username }}</strong><br>
+                                    <small style="color: #a0a0a0;">{{ u.email }}</small>
+                                </td>
+                                <td style="padding: 10px; font-size: 12px;">
+                                    {% if u.profile.role == 'ADMIN' %}
+                                        <span class="badge badge-danger">ADMIN</span>
+                                    {% elif u.profile.role == 'TRAINER' %}
+                                        <span class="badge badge-primary">TRAINER</span>
+                                    {% else %}
+                                        <span class="badge badge-success">MEMBER</span>
+                                    {% endif %}
+                                </td>
+                                <td style="padding: 10px; color: #ccc; font-size: 12px;">{{ u.date_joined|date:"d M Y" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Recent Payments -->
+            <div class="col-lg-6 mb-4">
+                <div style="background: #1c1c2e; border-radius: 12px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 style="color: #fff; font-family: 'Oswald', sans-serif; margin: 0;">
+                            <i class="fa fa-credit-card" style="color: #2dce89;"></i> Recent Transactions
+                        </h4>
+                        <a href="{% url 'payment-dashboard' %}" style="color: #2dce89; font-size: 12px;">View Ledger &rarr;</a>
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                <th style="padding: 8px; color: #a0a0a0; font-size: 12px;">Member</th>
+                                <th style="padding: 8px; color: #a0a0a0; font-size: 12px;">Amount</th>
+                                <th style="padding: 8px; color: #a0a0a0; font-size: 12px;">Method</th>
+                                <th style="padding: 8px; color: #a0a0a0; font-size: 12px;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in recent_payments %}
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                <td style="padding: 10px; color: #fff; font-size: 13px;">{{ p.member_name }}</td>
+                                <td style="padding: 10px; color: #2dce89; font-weight: 700; font-size: 13px;">₹{{ p.amount }}</td>
+                                <td style="padding: 10px; color: #ccc; font-size: 12px;">{{ p.method }}</td>
+                                <td style="padding: 10px; font-size: 12px;">
+                                    <span class="badge badge-success">{{ p.status }}</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

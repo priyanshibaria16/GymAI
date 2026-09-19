@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ blog.title|default:"Blog" }} | IronPeak Fitness Studio{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-section set-bg" data-setbg="{% static 'img/breadcrumb-bg.jpg' %}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="breadcrumb-text">
+                    <h2>Blog</h2>
+                    <div class="bt-option">
+                        <a href="{% url 'index.html' %}">Home</a>
+                        <a href="{% url 'blog.html' %}">Blog</a>
+                        <span>{{ blog.category|default:"Article" }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
+
+<!-- Blog Details Section Begin -->
+<section class="blog-details-section spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 p-0 m-auto">
+                {% if blog %}
+                <div class="blog-details-text">
+                    <div class="blog-details-title">
+                        <h3 style="color:#fff; font-family:'Oswald',sans-serif; margin-bottom:16px;">{{ blog.title }}</h3>
+                        <ul style="color:#a0a0a0; margin-bottom:24px;">
+                            <li style="display:inline-block; margin-right:16px;">by {{ blog.author }}</li>
+                            <li style="display:inline-block; margin-right:16px;">{{ blog.created_at|date:"M d, Y" }}</li>
+                            <li style="display:inline-block; margin-right:16px;">{{ blog.read_time }}</li>
+                            <li style="display:inline-block;">{{ blog.comments_count }} Comments</li>
+                        </ul>
+                        <p>{{ blog.snippet }}</p>
+                    </div>
+                    <div class="blog-details-pic">
+                        <div class="blog-details-pic-item">
+                            <img src="{% static 'img/blog/details/details-1.jpg' %}" alt="IronPeak training floor">
+                        </div>
+                        <div class="blog-details-pic-item">
+                            <img src="{% static 'img/blog/details/details-2.jpg' %}" alt="IronPeak coaching session">
+                        </div>
+                    </div>
+                    <div class="blog-details-more-desc">
+                        {{ blog.content|linebreaks }}
+                    </div>
+                    <div class="blog-details-tag-share">
+                        <div class="tags">
+                            <a href="{% url 'blog.html' %}?category={{ blog.category }}">{{ blog.category }}</a>
+                            <a href="{% url 'blog.html' %}?category=Workout">Workout</a>
+                            <a href="{% url 'blog.html' %}?category=Nutrition">Nutrition</a>
+                        </div>
+                    </div>
+                    <div class="blog-details-author">
+                        <div class="ba-pic">
+                            <img src="{% static 'img/blog/details/blog-profile.jpg' %}" alt="{{ blog.author }}">
+                        </div>
+                        <div class="ba-text">
+                            <h5>{{ blog.author }}</h5>
+                            <p>Coach at IronPeak Fitness Studio, Ahmedabad. Writing from real sessions on
+                                our training floor - every tip in this article is used with our members.</p>
+                        </div>
+                    </div>
+                    <div class="ip-blog-next">
+                        <h5 class="co-title">Keep reading</h5>
+                        <div class="row">
+                            {% for post in recent_blogs %}
+                            <div class="col-md-4">
+                                <div class="ip-next-card">
+                                    <h6><a href="{% url 'blog-detail' post.pk %}">{{ post.title|truncatechars:55 }}</a></h6>
+                                    <span>{{ post.created_at|date:"M d, Y" }} &middot; {{ post.read_time }}</span>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="col-12"><p style="color:#a0a0a0;">More articles coming soon.</p></div>
+                            {% endfor %}
+                        </div>
+                        <a href="{% url 'blog.html' %}" class="primary-btn btn-normal" style="margin-top:24px;">Back to all articles</a>
+                    </div>
+                </div>
+                {% else %}
+                <div class="ip-empty-state text-center">
+                    <i class="fa fa-newspaper-o fa-3x"></i>
+                    <h4>No article available yet</h4>
+                    <p>Our coaches are writing new training and nutrition guides. Check back soon.</p>
+                    <a href="{% url 'blog.html' %}" class="primary-btn btn-normal">Back to blog</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Blog Details Section End -->
+
+<!-- Get In Touch section is rendered by base.html -->
+{% endblock content %}

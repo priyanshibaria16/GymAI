@@ -1,0 +1,76 @@
+# ============================================================
+# IronPeak Fitness Studio — Git Ignore Rules
+# ============================================================
+# SECURITY: never commit secrets, keys, local DB, or venv.
+
+# ---- Environment & Secrets (NEVER commit) ----
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.crt
+secrets.json
+local_settings.py
+
+# ---- Django ----
+*.log
+db.sqlite3
+db.sqlite3-journal
+/media/
+staticfiles/
+static/
+local/
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ---- Virtual Environments ----
+venv/
+env/
+ENV/
+.venv/
+virtualenv/
+
+# ---- Testing / Coverage ----
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+
+# ---- Tooling / IDE ----
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ---- Source zips in Static/Source (large vendor archives) ----
+Static/Source/*.zip

@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% comment %} <!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="description" content="Gym Template">
+    <meta name="keywords" content="Gym, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Gym | Template</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Muli:300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald:300,400,500,600,700&display=swap" rel="stylesheet">
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="css/flaticon.css" type="text/css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="css/barfiller.css" type="text/css">
+    <link rel="stylesheet" href="css/magnific-popup.css" type="text/css">
+    <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css">
+</head>
+
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Offcanvas Menu Section Begin -->
+    <div class="offcanvas-menu-overlay"></div>
+    <div class="offcanvas-menu-wrapper">
+        <div class="canvas-close">
+            <i class="fa fa-close"></i>
+        </div>
+        <div class="canvas-search search-switch">
+            <i class="fa fa-search"></i>
+        </div>
+        <nav class="canvas-menu mobile-menu">
+            <ul>
+                <li><a href="{% url 'index.html' %}">Home</a></li>
+                <li><a href="./about-us.html">About Us</a></li>
+                <li><a href="./class-details.html">Classes</a></li>
+                <li><a href="./services.html">Services</a></li>
+                <li><a href="./team.html">Our Team</a></li>
+                <li><a href="#">Pages</a>
+                    <ul class="dropdown">
+                        <li><a href="./about-us.html">About us</a></li>
+                        <li><a href="./class-timetable.html">Classes timetable</a></li>
+                        <li><a href="./bmi-calculator.html">Bmi calculate</a></li>
+                        <li><a href="./team.html">Our team</a></li>
+                        <li><a href="./gallery.html">Gallery</a></li>
+                        <li><a href="./blog.html">Our blog</a></li>
+                        <li><a href="./404.html">404</a></li>
+                    </ul>
+                </li>
+                <li><a href="./contact.html">Contact</a></li>
+            </ul>
+        </nav>
+        <div id="mobile-menu-wrap"></div>
+        <div class="canvas-social">
+            <a href="#"><i class="fa fa-facebook"></i></a>
+            <a href="#"><i class="fa fa-twitter"></i></a>
+            <a href="#"><i class="fa fa-youtube-play"></i></a>
+            <a href="#"><i class="fa fa-instagram"></i></a>
+        </div>
+    </div>
+    <!-- Offcanvas Menu Section End -->
+
+    <!-- Header Section Begin -->
+    <header class="header-section">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="logo">
+                        <a href="./index.html">
+                            <img src="{% static 'img/logo.png' %}" alt="">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <nav class="nav-menu">
+                        <ul>
+                            <li><a href="{% url 'index.html' %}">Home</a></li>
+                            <li><a href="./about-us.html">About Us</a></li>
+                            <li><a href="./classes.html">Classes</a></li>
+                            <li><a href="./services.html">Services</a></li>
+                            <li><a href="./team.html">Our Team</a></li>
+                            <li class="active"><a href="#">Pages</a>
+                                <ul class="dropdown">
+                                    <li><a href="./about-us.html">About us</a></li>
+                                    <li><a href="./class-timetable.html">Classes timetable</a></li>
+                                    <li><a href="./bmi-calculator.html">Bmi calculate</a></li>
+                                    <li><a href="./team.html">Our team</a></li>
+                                    <li><a href="./gallery.html">Gallery</a></li>
+                                    <li><a href="./blog.html">Our blog</a></li>
+                                    <li><a href="./404.html">404</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="./contact.html">Contact</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-lg-3">
+                    <div class="top-option">
+                        <div class="to-search search-switch">
+                            <i class="fa fa-search"></i>
+                        </div>
+                        <div class="to-social">
+                            <a href="#"><i class="fa fa-facebook"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-youtube-play"></i></a>
+                            <a href="#"><i class="fa fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="canvas-open">
+                <i class="fa fa-bars"></i>
+            </div>
+        </div>
+    </header>
+    <!-- Header End --> {% endcomment %}
+
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-section set-bg" data-setbg="{% static 'img/breadcrumb-bg.jpg' %}">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb-text">
+                        <h2>Timetable</h2>
+                        <div class="bt-option">
+                            <a href="{% url 'index.html' %}">Home</a>
+                            <span>Timetable</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Class Timetable Section Begin -->
+    <section class="class-timetable-section spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="section-title">
+                        <span>Find Your Time</span>
+                        <h2>CLASSES & BOOKING TIMETABLE</h2>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-right">
+                    <a href="{% url 'dashboard' %}" style="display: inline-block; background: linear-gradient(135deg, #5e72e4, #825ee4); color: white; padding: 12px 25px; border-radius: 25px; text-decoration: none; font-weight: 600;">
+                        <i class="fa fa-dashboard"></i> View Class Analytics
+                    </a>
+                </div>
+            </div>
+
+            <!-- Dynamic Classes Grid -->
+            <div class="row mb-5">
+                {% for item in classes %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div style="background: #1c1c2e; border-radius: 12px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); position: relative;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                            <h4 style="color: #fff; font-family: 'Oswald', sans-serif; margin: 0;">{{ item.name }}</h4>
+                            <span style="background: rgba(245, 54, 92, 0.2); color: #f5365c; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;">
+                                {{ item.schedule_day }}
+                            </span>
+                        </div>
+                        <p style="color: #a0a0a0; font-size: 13px; margin-bottom: 10px;">
+                            <i class="fa fa-user-circle" style="color: #2dce89;"></i> Trainer: <strong style="color: #fff;">{{ item.trainer }}</strong>
+                        </p>
+                        <p style="color: #a0a0a0; font-size: 13px; margin-bottom: 15px;">
+                            <i class="fa fa-clock-o" style="color: #5e72e4;"></i> Time: <strong style="color: #fff;">{{ item.schedule_time }}</strong> ({{ item.duration_minutes }} mins)
+                        </p>
+
+                        <!-- Occupancy Progress Bar -->
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px;">
+                                <span style="color: #a0a0a0;">Capacity</span>
+                                <span style="color: {% if item.is_full %}#e74c3c{% else %}#2dce89{% endif %}; font-weight: 600;">
+                                    {{ item.current_enrolled }} / {{ item.capacity }} Seats
+                                </span>
+                            </div>
+                            <div style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
+                                <div style="height: 100%; width: {{ item.occupancy_percentage }}%; background: {% if item.is_full %}#e74c3c{% else %}linear-gradient(90deg, #2dce89, #11cdef){% endif %}; border-radius: 3px;"></div>
+                            </div>
+                        </div>
+
+                        {% if item.is_full %}
+                            <button disabled style="width: 100%; background: #333; color: #777; border: none; padding: 10px; border-radius: 20px; font-weight: 600; cursor: not-allowed;">
+                                Fully Booked
+                            </button>
+                        {% else %}
+                            <a href="{% url 'book-class' item.id %}" style="display: block; text-align: center; background: linear-gradient(135deg, #f36100, #f5365c); color: white; padding: 10px; border-radius: 20px; text-decoration: none; font-weight: 600; text-transform: uppercase; font-size: 13px; letter-spacing: 1px;">
+                                Book Now
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-lg-12 text-center" style="padding: 40px;">
+                    <p style="color: #a0a0a0;">No classes scheduled yet. Run <code>python manage.py generate_sample_data</code> to populate classes.</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Class Popularity Visualization Chart -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div style="background: #1c1c2e; border-radius: 12px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                        <h4 style="color: #fff; font-family: 'Oswald', sans-serif; margin-bottom: 20px;">
+                            <i class="fa fa-bar-chart" style="color: #2dce89;"></i> Class Enrollment & Popularity Chart
+                        </h4>
+                        <canvas id="classPopularityChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Class Timetable Section End -->
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        Chart.defaults.color = '#a0a0a0';
+        Chart.defaults.font.family = "'Muli', sans-serif";
+
+        new Chart(document.getElementById('classPopularityChart'), {
+            type: 'bar',
+            data: {
+                labels: {{ class_names|safe }},
+                datasets: [
+                    {
+                        label: 'Enrolled Members',
+                        data: {{ class_enrolled|safe }},
+                        backgroundColor: 'rgba(45, 206, 137, 0.7)',
+                        borderRadius: 6,
+                    },
+                    {
+                        label: 'Total Capacity',
+                        data: {{ class_capacity|safe }},
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        borderRadius: 6,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'top' } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    </script>
+
+    <!-- Get In Touch section is rendered by base.html -->
+
+{% comment %} 
+    <!-- Footer Section Begin -->
+    <section class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="fs-about">
+                        <div class="fa-logo">
+                            <a href="#"><img src="{% static 'img/logo.png' %}" alt=""></a>
+                        </div>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                            labore dolore magna aliqua endisse ultrices gravida lorem.</p>
+                        <div class="fa-social">
+                            <a href="#"><i class="fa fa-facebook"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-youtube-play"></i></a>
+                            <a href="#"><i class="fa fa-instagram"></i></a>
+                            <a href="#"><i class="fa  fa-envelope-o"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-6">
+                    <div class="fs-widget">
+                        <h4>Useful links</h4>
+                        <ul>
+                            <li><a href="#">About</a></li>
+                            <li><a href="#">Blog</a></li>
+                            <li><a href="#">Classes</a></li>
+                            <li><a href="#">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-6">
+                    <div class="fs-widget">
+                        <h4>Support</h4>
+                        <ul>
+                            <li><a href="#">Login</a></li>
+                            <li><a href="#">My account</a></li>
+                            <li><a href="#">Subscribe</a></li>
+                            <li><a href="#">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="fs-widget">
+                        <h4>Tips & Guides</h4>
+                        <div class="fw-recent">
+                            <h6><a href="#">Physical fitness may help prevent depression, anxiety</a></h6>
+                            <ul>
+                                <li>3 min read</li>
+                                <li>20 Comment</li>
+                            </ul>
+                        </div>
+                        <div class="fw-recent">
+                            <h6><a href="#">Fitness: The best exercise to lose belly fat and tone up...</a></h6>
+                            <ul>
+                                <li>3 min read</li>
+                                <li>20 Comment</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="copyright-text">
+                        <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+  Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+  <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Footer Section End -->
+
+    <!-- Search model Begin -->
+    <div class="search-model">
+        <div class="h-100 d-flex align-items-center justify-content-center">
+            <div class="search-close-switch">+</div>
+            <form class="search-model-form">
+                <input type="text" id="search-input" placeholder="Search here.....">
+            </form>
+        </div>
+    </div>
+    <!-- Search model end -->
+
+    <!-- Js Plugins -->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.magnific-popup.min.js"></script>
+    <script src="js/masonry.pkgd.min.js"></script>
+    <script src="js/jquery.barfiller.js"></script>
+    <script src="js/jquery.slicknav.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/main.js"></script>
+
+
+
+</body>
+
+</html> {% endcomment %}
+{% endblock content %}

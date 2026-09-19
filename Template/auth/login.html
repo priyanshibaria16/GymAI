@@ -1,0 +1,248 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In | IronPeak Fitness Studio</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Muli:300,400,600,700,800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald:400,500,600,700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Styles -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+
+    <style>
+        body {
+            font-family: 'Muli', sans-serif;
+            background: radial-gradient(circle at top right, #1a1a2e 0%, #0d0d15 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px 0;
+            color: #ffffff;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 460px;
+            padding: 15px;
+        }
+
+        .auth-card {
+            background: rgba(23, 23, 38, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(243, 97, 0, 0.3);
+            border-radius: 16px;
+            padding: 40px 35px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(243, 97, 0, 0.15);
+        }
+
+        .auth-brand {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .auth-brand img {
+            max-width: 160px;
+            margin-bottom: 12px;
+        }
+
+        .auth-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #ffffff;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .auth-subtitle {
+            color: #a0a0a0;
+            font-size: 14px;
+            margin-bottom: 0;
+        }
+
+        .form-control-custom {
+            background: rgba(255, 255, 255, 0.06) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            border-radius: 8px !important;
+            color: #ffffff !important;
+            padding: 12px 16px !important;
+            font-size: 14px !important;
+            transition: all 0.3s ease;
+        }
+
+        .form-control-custom:focus {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border-color: #f36100 !important;
+            box-shadow: 0 0 10px rgba(243, 97, 0, 0.3) !important;
+        }
+
+        .btn-auth {
+            background: linear-gradient(135deg, #f36100 0%, #f5365c 100%);
+            border: none;
+            border-radius: 8px;
+            color: #ffffff;
+            font-family: 'Oswald', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            padding: 12px;
+            width: 100%;
+            text-transform: uppercase;
+            box-shadow: 0 6px 20px rgba(243, 97, 0, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .btn-auth:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(243, 97, 0, 0.6);
+            color: #ffffff;
+        }
+
+        .demo-badges {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 25px;
+            justify-content: center;
+        }
+
+        .demo-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #e0e0e0;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .demo-btn:hover {
+            background: #f36100;
+            border-color: #f36100;
+            color: #ffffff;
+        }
+
+        .toggle-password {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-left: none;
+            color: #f36100;
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+            cursor: pointer;
+            padding: 0 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-brand">
+            <a href="{% url 'login' %}">
+                <img src="{% static 'img/logo.png' %}" alt="IronPeak Fitness Studio">
+            </a>
+            <h2 class="auth-title">Welcome Back</h2>
+            <p class="auth-subtitle">Sign in to access your dashboard & workout logs</p>
+        </div>
+
+        <!-- Quick Demo Login Selection -->
+        <div class="text-center mb-2">
+            <small style="color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Quick Demo Access</small>
+        </div>
+        <div class="demo-badges">
+            <button type="button" class="demo-btn" onclick="fillDemo('admin_demo', 'Admin@123456')">
+                <i class="fa fa-shield me-1"></i> Admin
+            </button>
+            <button type="button" class="demo-btn" onclick="fillDemo('trainer_demo', 'Trainer@123456')">
+                <i class="fa fa-user-secret me-1"></i> Trainer
+            </button>
+            <button type="button" class="demo-btn" onclick="fillDemo('member_demo', 'Member@123456')">
+                <i class="fa fa-user me-1"></i> Member
+            </button>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags|default:'info' }}{% endif %} alert-dismissible fade show p-2 mb-3 small" role="alert" style="border-radius: 8px; font-size: 13px;">
+                    <i class="fa fa-info-circle me-1"></i> {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="color: #fff; opacity: 0.8;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" action="{% url 'login' %}{% if next %}?next={{ next }}{% endif %}" id="loginForm">
+            {% csrf_token %}
+
+            <div class="form-group mb-3">
+                <label style="color: #b0b0b0; font-size: 13px; font-weight: 600;" class="mb-1">Username or Email *</label>
+                <input type="text" name="username" id="id_username" class="form-control form-control-custom" placeholder="Enter username or email" required autofocus>
+                {% if form.username.errors %}<small class="text-danger mt-1 d-block">{{ form.username.errors.0 }}</small>{% endif %}
+            </div>
+
+            <div class="form-group mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <label style="color: #b0b0b0; font-size: 13px; font-weight: 600;" class="m-0">Password *</label>
+                    <a href="{% url 'forgot-password' %}" style="color: #f36100; font-size: 12px; text-decoration: none;">Forgot Password?</a>
+                </div>
+                <div class="input-group">
+                    <input type="password" name="password" id="id_password" class="form-control form-control-custom" style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important;" placeholder="Enter password" required>
+                    <div class="input-group-append">
+                        <button class="btn toggle-password" type="button" onclick="togglePasswordVisibility()">
+                            <i class="fa fa-eye" id="toggleEye"></i>
+                        </button>
+                    </div>
+                </div>
+                {% if form.password.errors %}<small class="text-danger mt-1 d-block">{{ form.password.errors.0 }}</small>{% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-auth mt-2">
+                Sign In <i class="fa fa-arrow-right ms-2"></i>
+            </button>
+        </form>
+
+        <div class="text-center mt-4 pt-3" style="border-top: 1px solid rgba(255, 255, 255, 0.08);">
+            <p style="color: #999999; margin: 0; font-size: 14px;">
+                Don't have an account? <a href="{% url 'signup' %}" style="color: #f36100; font-weight: 700; text-decoration: none;">Create Member Account</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script>
+function togglePasswordVisibility() {
+    const pwdInput = document.getElementById('id_password');
+    const eyeIcon = document.getElementById('toggleEye');
+    if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        eyeIcon.className = 'fa fa-eye-slash';
+    } else {
+        pwdInput.type = 'password';
+        eyeIcon.className = 'fa fa-eye';
+    }
+}
+
+function fillDemo(username, password) {
+    document.getElementById('id_username').value = username;
+    document.getElementById('id_password').value = password;
+    document.getElementById('loginForm').submit();
+}
+</script>
+</body>
+</html>

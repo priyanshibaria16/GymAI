@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-section set-bg" data-setbg="{% static 'img/breadcrumb-bg.jpg' %}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="breadcrumb-text">
+                    <h2>AI Virtual Assistant</h2>
+                    <div class="bt-option">
+                        <a href="{% url 'index.html' %}">Home</a>
+                        <span>Chatbot</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
+
+<section class="spad">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div style="background: #1c1c2e; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); overflow: hidden;">
+                    
+                    <!-- Chat Header -->
+                    <div style="background: linear-gradient(135deg, #f5365c, #2a2a4a); padding: 20px; color: #fff; text-align: center;">
+                        <h4 style="margin: 0; font-family: 'Oswald', sans-serif;"><i class="fa fa-robot"></i> GymBot AI</h4>
+                        <p style="margin: 5px 0 0; font-size: 13px; color: #eee;">Ask me anything about memberships, classes, or fitness advice!</p>
+                    </div>
+                    
+                    <!-- Chat Messages Area -->
+                    <div id="chatMessages" style="height: 400px; overflow-y: auto; padding: 20px; background: #222; display: flex; flex-direction: column; gap: 15px;">
+                        <!-- Initial Bot Message -->
+                        <div style="display: flex; gap: 10px; align-items: flex-start;">
+                            <div style="background: #f5365c; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0;">
+                                <i class="fa fa-robot"></i>
+                            </div>
+                            <div style="background: #333; padding: 12px 18px; border-radius: 0 15px 15px 15px; color: #ccc; max-width: 80%; font-size: 14px; line-height: 1.5;">
+                                Hello! I'm GymBot, your AI virtual assistant. How can I help you achieve your fitness goals today?
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Chat Input Area -->
+                    <div style="padding: 15px; background: #1c1c2e; border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 10px;">
+                        <input type="text" id="chatInput" placeholder="Type your message here..." style="flex: 1; padding: 12px 20px; border-radius: 30px; border: 1px solid #444; background: #111; color: #fff; outline: none; font-size: 14px;">
+                        <button id="sendBtn" style="background: #f5365c; color: #fff; border: none; border-radius: 50%; width: 50px; height: 50px; cursor: pointer; transition: 0.3s; flex-shrink: 0;">
+                            <i class="fa fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+        
+        function addMessage(text, sender) {
+            const wrapper = document.createElement('div');
+            wrapper.style.display = 'flex';
+            wrapper.style.gap = '10px';
+            wrapper.style.alignItems = 'flex-start';
+            wrapper.style.alignSelf = sender === 'user' ? 'flex-end' : 'flex-start';
+            wrapper.style.flexDirection = sender === 'user' ? 'row-reverse' : 'row';
+            
+            const avatar = document.createElement('div');
+            avatar.style.borderRadius = '50%';
+            avatar.style.width = '40px';
+            avatar.style.height = '40px';
+            avatar.style.display = 'flex';
+            avatar.style.alignItems = 'center';
+            avatar.style.justifyContent = 'center';
+            avatar.style.color = '#fff';
+            avatar.style.flexShrink = '0';
+            
+            if (sender === 'user') {
+                avatar.style.background = '#5e72e4';
+                avatar.innerHTML = '<i class="fa fa-user"></i>';
+            } else {
+                avatar.style.background = '#f5365c';
+                avatar.innerHTML = '<i class="fa fa-robot"></i>';
+            }
+            
+            const bubble = document.createElement('div');
+            bubble.style.padding = '12px 18px';
+            bubble.style.color = '#fff';
+            bubble.style.maxWidth = '80%';
+            bubble.style.fontSize = '14px';
+            bubble.style.lineHeight = '1.5';
+            bubble.innerText = text;
+            
+            if (sender === 'user') {
+                bubble.style.background = '#5e72e4';
+                bubble.style.borderRadius = '15px 0 15px 15px';
+            } else {
+                bubble.style.background = '#333';
+                bubble.style.color = '#ccc';
+                bubble.style.borderRadius = '0 15px 15px 15px';
+            }
+            
+            wrapper.appendChild(avatar);
+            wrapper.appendChild(bubble);
+            chatMessages.appendChild(wrapper);
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text || sendBtn.disabled) return;
+            
+            // 1. Show user message
+            addMessage(text, 'user');
+            chatInput.value = '';
+            
+            // 2. Add loading indicator + lock the send button while the bot thinks
+            sendBtn.disabled = true;
+            sendBtn.style.opacity = '0.6';
+            sendBtn.style.cursor = 'not-allowed';
+            sendBtn.innerHTML = '<i class="fa fa-circle-o-notch fa-spin"></i>';
+            const loadingId = 'loading-' + Date.now();
+            const loadingWrapper = document.createElement('div');
+            loadingWrapper.id = loadingId;
+            loadingWrapper.style.display = 'flex';
+            loadingWrapper.style.gap = '10px';
+            loadingWrapper.style.alignItems = 'flex-start';
+            loadingWrapper.innerHTML = `
+                <div style="background: #f5365c; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0;">
+                    <i class="fa fa-robot"></i>
+                </div>
+                <div style="background: #333; padding: 12px 18px; border-radius: 0 15px 15px 15px; color: #ccc; font-size: 14px;">
+                    <i class="fa fa-spinner fa-spin"></i> Typing...
+                </div>
+            `;
+            chatMessages.appendChild(loadingWrapper);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // 3. Call API
+            fetch("{% url 'chatbot-api' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ message: text })
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById(loadingId).remove();
+                addMessage(data.reply, 'bot');
+            })
+            .catch(err => {
+                document.getElementById(loadingId).remove();
+                addMessage("Oops! I'm having trouble connecting right now. Please try again later.", 'bot');
+            })
+            .finally(() => {
+                sendBtn.disabled = false;
+                sendBtn.style.opacity = '';
+                sendBtn.style.cursor = 'pointer';
+                sendBtn.innerHTML = '<i class="fa fa-paper-plane"></i>';
+                chatInput.focus();
+            });
+        }
+        
+        sendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+    });
+</script>
+{% endblock %}

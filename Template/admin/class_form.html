@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{% if editing %}Edit Class{% else %}Add Class{% endif %} | IronPeak Fitness Studio{% endblock %}
+
+{% block content %}
+<section class="breadcrumb-section set-bg" data-setbg="{% static 'img/breadcrumb-bg.jpg' %}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="breadcrumb-text">
+                    <h2>{% if editing %}Edit Class{% else %}Add New Class{% endif %}</h2>
+                    <div class="bt-option">
+                        <a href="{% url 'admin-dashboard' %}">Admin</a>
+                        <a href="{% url 'admin-class-list' %}">Classes</a>
+                        <span>{% if editing %}Edit{% else %}Add{% endif %}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="spad" style="background: #0f0f1a; min-height: 80vh;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div style="background: linear-gradient(145deg, #1a1a2e, #16213e); border-radius: 16px; padding: 40px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); border: 1px solid rgba(94,114,228,0.18);">
+
+                    <div class="d-flex align-items-center mb-4" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px;">
+                        <div style="background: linear-gradient(135deg, #5e72e4, #825ee4); border-radius: 12px; width: 50px; height: 50px; display:flex; align-items:center; justify-content:center; margin-right: 15px; flex-shrink: 0;">
+                            <i class="fa fa-calendar-plus-o" style="color:#fff; font-size: 20px;"></i>
+                        </div>
+                        <div>
+                            <h3 style="color: #fff; font-family: 'Oswald', sans-serif; margin: 0; font-size: 22px;">{% if editing %}UPDATE CLASS{% else %}CREATE NEW CLASS{% endif %}</h3>
+                            <p style="color: #a0a0a0; margin: 0; font-size: 13px;">Set the schedule and assign it to a trainer</p>
+                        </div>
+                        <a href="{% url 'admin-class-list' %}" class="btn btn-sm ms-auto" style="background: rgba(255,255,255,0.08); color: #ccc; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px;">
+                            <i class="fa fa-arrow-left me-1"></i> Back
+                        </a>
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                        <div style="background:rgba(245,54,92,0.12); border:1px solid rgba(245,54,92,0.4); color:#f5365c; border-radius:8px; padding:10px 14px; margin-bottom:16px; font-size:13px;">
+                            {{ form.non_field_errors }}
+                        </div>
+                        {% endif %}
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-12">
+                                <label class="ip-label"><i class="fa fa-dumbbell me-1" style="color:#5e72e4;"></i> Class Name <span style="color:#f5365c;">*</span></label>
+                                {{ form.name }}
+                                {% if form.name.errors %}<div class="ip-err">{{ form.name.errors|striptags }}</div>{% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="ip-label"><i class="fa fa-user-circle me-1" style="color:#2dce89;"></i> Assign Trainer</label>
+                                {{ form.assigned_trainer }}
+                                <small class="ip-hint">Choose a team member to give them access to this class.</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="ip-label"><i class="fa fa-calendar-o me-1" style="color:#f39c12;"></i> Day <span style="color:#f5365c;">*</span></label>
+                                {{ form.schedule_day }}
+                                {% if form.schedule_day.errors %}<div class="ip-err">{{ form.schedule_day.errors|striptags }}</div>{% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label class="ip-label"><i class="fa fa-clock-o me-1" style="color:#5e72e4;"></i> Time <span style="color:#f5365c;">*</span></label>
+                                {{ form.schedule_time }}
+                                {% if form.schedule_time.errors %}<div class="ip-err">{{ form.schedule_time.errors|striptags }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="ip-label"><i class="fa fa-hourglass-half me-1" style="color:#2dce89;"></i> Duration (min)</label>
+                                {{ form.duration_minutes }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="ip-label"><i class="fa fa-users me-1" style="color:#f5365c;"></i> Capacity</label>
+                                {{ form.capacity }}
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-12">
+                                <label class="ip-label"><i class="fa fa-file-text-o me-1" style="color:#825ee4;"></i> Description</label>
+                                {{ form.description }}
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-3">
+                            <button type="submit" style="flex:1; padding:14px; background:linear-gradient(135deg,#5e72e4,#825ee4); color:#fff; border:none; border-radius:10px; font-family:'Oswald',sans-serif; font-size:15px; font-weight:600; letter-spacing:1px; cursor:pointer; text-transform:uppercase;">
+                                <i class="fa fa-save me-2"></i> {% if editing %}SAVE CHANGES{% else %}CREATE CLASS{% endif %}
+                            </button>
+                            <a href="{% url 'admin-class-list' %}" style="flex:0.4; padding:14px; background:rgba(255,255,255,0.06); color:#ccc; border:1px solid rgba(255,255,255,0.15); border-radius:10px; font-size:14px; text-align:center; text-decoration:none; display:flex; align-items:center; justify-content:center;">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.ip-label { color:#a0a0a0; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:1px; display:block; margin-bottom:6px; }
+.ip-hint { color:#707080; font-size:11px; display:block; margin-top:4px; }
+.ip-err { color:#f5365c; font-size:12px; margin-top:4px; }
+.ip-input { width:100%; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:12px 16px; color:#fff; font-size:14px; transition:border-color .3s, box-shadow .3s; outline:none; }
+.ip-input:focus { border-color:#5e72e4; box-shadow:0 0 0 3px rgba(94,114,228,0.15); }
+.ip-input::placeholder { color:#606070; }
+.ip-input option { background:#1a1a2e; color:#fff; }
+input[type="time"].ip-input { color-scheme: dark; }
+</style>
+{% endblock %}

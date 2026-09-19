@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}User Management | Admin Portal{% endblock %}
+
+{% block content %}
+<section class="breadcrumb-section set-bg" data-setbg="{% static 'img/breadcrumb-bg.jpg' %}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="breadcrumb-text">
+                    <h2>User & Role Management</h2>
+                    <div class="bt-option">
+                        <a href="{% url 'admin-dashboard' %}">Admin</a>
+                        <span>Users</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="spad" style="background: #151515;">
+    <div class="container">
+        <!-- Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Page Header with Add Member action -->
+        <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+            <h4 style="color:#fff; font-family:'Oswald',sans-serif; margin:0; letter-spacing:1px;">
+                <i class="fa fa-users" style="color:#f5365c; margin-right:8px;"></i>All Users
+            </h4>
+            <a href="{% url 'admin-add-member' %}" class="ip-add-member-btn">
+                <i class="fa fa-user-plus"></i> Add Member
+            </a>
+        </div>
+
+        <!-- Filter & Search Card -->
+        <div style="background: #1c1c2e; border-radius: 12px; padding: 25px; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+            <form method="GET" action="{% url 'admin-user-list' %}" class="row align-items-center">
+                <div class="col-md-4 mb-2 mb-md-0">
+                    <input type="text" name="q" value="{{ search_query }}" class="form-control" placeholder="Search by name, username, email, phone..." style="background: #141421; color: #fff; border: 1px solid #333;">
+                </div>
+                <div class="col-md-3 mb-2 mb-md-0">
+                    <select name="role" class="form-control" style="background: #141421; color: #fff; border: 1px solid #333;">
+                        <option value="">All Roles</option>
+                        <option value="ADMIN" {% if role_filter == 'ADMIN' %}selected{% endif %}>ADMIN</option>
+                        <option value="TRAINER" {% if role_filter == 'TRAINER' %}selected{% endif %}>TRAINER</option>
+                        <option value="MEMBER" {% if role_filter == 'MEMBER' %}selected{% endif %}>MEMBER</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-2 mb-md-0">
+                    <select name="status" class="form-control" style="background: #141421; color: #fff; border: 1px solid #333;">
+                        <option value="">All Statuses</option>
+                        <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+                        <option value="inactive" {% if status_filter == 'inactive' %}selected{% endif %}>Inactive</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-block" style="background: #f5365c; color: white; font-weight: 700;">Filter</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Users Table Card -->
+        <div style="background: #1c1c2e; border-radius: 12px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid rgba(255,255,255,0.1);">
+                        <th style="padding: 12px; color: #a0a0a0; text-align: left; font-size: 12px; text-transform: uppercase;">User Info</th>
+                        <th style="padding: 12px; color: #a0a0a0; text-align: left; font-size: 12px; text-transform: uppercase;">Role</th>
+                        <th style="padding: 12px; color: #a0a0a0; text-align: left; font-size: 12px; text-transform: uppercase;">Status</th>
+                        <th style="padding: 12px; color: #a0a0a0; text-align: left; font-size: 12px; text-transform: uppercase;">Joined Date</th>
+                        <th style="padding: 12px; color: #a0a0a0; text-align: right; font-size: 12px; text-transform: uppercase;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in page_obj %}
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding: 14px; color: #fff;">
+                            <div class="d-flex align-items-center">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #28273c; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #f5365c; margin-right: 12px;">
+                                    {{ u.first_name|default:u.username|slice:":1"|upper }}
+                                </div>
+                                <div>
+                                    <strong style="color: #fff; font-size: 14px;">{{ u.get_full_name|default:u.username }}</strong><br>
+                                    <small style="color: #a0a0a0;">@{{ u.username }} • {{ u.email }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="padding: 14px;">
+                            <form method="POST" action="{% url 'admin-user-role' u.id %}" style="display: inline-block;">
+                                {% csrf_token %}
+                                <select name="role" onchange="this.form.submit()" style="background: #141421; color: #fff; border: 1px solid #444; border-radius: 4px; padding: 4px 8px; font-size: 12px; font-weight: 600;">
+                                    <option value="ADMIN" {% if u.profile.role == 'ADMIN' %}selected{% endif %}>ADMIN</option>
+                                    <option value="TRAINER" {% if u.profile.role == 'TRAINER' %}selected{% endif %}>TRAINER</option>
+                                    <option value="MEMBER" {% if u.profile.role == 'MEMBER' %}selected{% endif %}>MEMBER</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td style="padding: 14px;">
+                            {% if u.is_active %}
+                                <span style="background: rgba(45, 206, 137, 0.2); color: #2dce89; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700;">ACTIVE</span>
+                            {% else %}
+                                <span style="background: rgba(231, 76, 60, 0.2); color: #e74c3c; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700;">INACTIVE</span>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 14px; color: #ccc; font-size: 13px;">{{ u.date_joined|date:"d M Y" }}</td>
+                        <td style="padding: 14px; text-align: right;">
+                            <a href="{% url 'admin-user-detail' u.id %}" class="btn btn-sm btn-info mr-1" title="View Detail"><i class="fa fa-eye"></i></a>
+                            <a href="{% url 'admin-user-edit' u.id %}" class="btn btn-sm btn-warning mr-1" title="Edit User"><i class="fa fa-pencil"></i></a>
+
+                            <form method="POST" action="{% url 'admin-user-status' u.id %}" style="display: inline-block;" onsubmit="return confirm('Are you sure you want to change activation status for {{ u.username }}?');">
+                                {% csrf_token %}
+                                {% if u.is_active %}
+                                    <button type="submit" class="btn btn-sm btn-danger" title="Deactivate User"><i class="fa fa-user-times"></i></button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-sm btn-success" title="Activate User"><i class="fa fa-user-plus"></i></button>
+                                {% endif %}
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">No users found matching your search criteria.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <div class="mt-4 d-flex justify-content-center">
+                <nav>
+                    <ul class="pagination">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&q={{ search_query }}&role={{ role_filter }}&status={{ status_filter }}">Previous</a></li>
+                        {% endif %}
+                        <li class="page-item active"><span class="page-link">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+                        {% if page_obj.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{ search_query }}&role={{ role_filter }}&status={{ status_filter }}">Next</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock content %}
+
+{% block extra_css %}
+<style>
+.ip-add-member-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #2dce89, #2dcecc);
+    color: #fff; border: none; border-radius: 50px;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.5px;
+    text-transform: uppercase; text-decoration: none;
+    box-shadow: 0 4px 16px rgba(45, 206, 137, 0.35);
+    transition: all 0.25s ease;
+}
+.ip-add-member-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(45, 206, 137, 0.5);
+    color: #fff; text-decoration: none;
+}
+</style>
+{% endblock %}

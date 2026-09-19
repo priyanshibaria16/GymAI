@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ gym_class.name }} — Attendance{% endblock %}
+
+{% block content %}
+<section class="breadcrumb-section set-bg" data-setbg="{% static 'img/breadcrumb-bg.jpg' %}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="breadcrumb-text">
+                    <h2>Class Attendance</h2>
+                    <div class="bt-option">
+                        <a href="{% url 'trainer-dashboard' %}">Trainer</a>
+                        <span>{{ gym_class.name }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="spad" style="background: #0f0f1a; min-height: 90vh;">
+    <div class="container">
+        {% if messages %}
+        <div class="mb-3">
+            {% for message in messages %}
+            <div style="background:{% if message.tags == 'error' %}rgba(245,54,92,0.12){% else %}rgba(45,206,137,0.12){% endif %}; border:1px solid {% if message.tags == 'error' %}rgba(245,54,92,0.4){% else %}rgba(45,206,137,0.4){% endif %}; color:{% if message.tags == 'error' %}#f5365c{% else %}#2dce89{% endif %}; border-radius:10px; padding:10px 14px; margin-bottom:8px; font-size:13px;">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Class header -->
+        <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 pb-3" style="border-bottom:1px solid rgba(255,255,255,0.08);">
+            <div>
+                <h3 style="color:#fff; font-family:'Oswald',sans-serif; margin:0; letter-spacing:1px;">
+                    <i class="fa fa-users" style="color:#f5365c;"></i> {{ gym_class.name }}
+                </h3>
+                <p style="color:#a0a0a0; margin:6px 0 0 0; font-size:13px;">
+                    <i class="fa fa-calendar-o"></i> {{ gym_class.schedule_day }}
+                    &nbsp;·&nbsp; <i class="fa fa-clock-o"></i> {{ gym_class.schedule_time|time:"H:i" }}
+                    &nbsp;·&nbsp; {{ gym_class.duration_minutes }} min
+                    {% if gym_class.assigned_trainer %}&nbsp;·&nbsp; <i class="fa fa-user"></i> {{ gym_class.assigned_trainer.name }}{% endif %}
+                </p>
+            </div>
+            <div class="d-flex align-items-center gap-2 mt-3 mt-md-0">
+                <span style="background:rgba(94,114,228,0.18); color:#8b9bff; padding:6px 14px; border-radius:20px; font-size:12px; font-weight:700;">{{ today|date:"d M Y" }}</span>
+                <a href="{% url 'trainer-dashboard' %}" class="btn btn-sm" style="background:rgba(255,255,255,0.08); color:#ccc; border:1px solid rgba(255,255,255,0.15);"><i class="fa fa-arrow-left me-1"></i> Back</a>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="row g-3 mb-4">
+            <div class="col-4">
+                <div class="ip-mini"><div class="ip-mini-num" style="color:#5e72e4;">{{ roster_count }}</div><div class="ip-mini-lbl">Enrolled</div></div>
+            </div>
+            <div class="col-4">
+                <div class="ip-mini"><div class="ip-mini-num" style="color:#2dce89;">{{ present_count }}</div><div class="ip-mini-lbl">Present</div></div>
+            </div>
+            <div class="col-4">
+                <div class="ip-mini"><div class="ip-mini-num" style="color:#f5365c;">{{ absent_count }}</div><div class="ip-mini-lbl">Absent</div></div>
+            </div>
+        </div>
+
+        <!-- Roster -->
+        <div class="ip-card">
+            <div class="ip-card-header">
+                <h5 class="ip-card-title"><i class="fa fa-list-ul me-2" style="color:#f5365c;"></i>Members in this class</h5>
+                <span style="background:rgba(45,206,137,0.15); color:#2dce89; font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px; border:1px solid rgba(45,206,137,0.3);">{{ present_count }}/{{ roster_count }} Present</span>
+            </div>
+            <div class="ip-card-body">
+                {% if roster %}
+                {% for m in roster %}
+                <div class="attendance-row {% if m.is_present %}present{% endif %}">
+                    <div class="att-avatar" style="background: linear-gradient(135deg, {% if m.is_present %}#2dce89, #2dcecc{% else %}#555, #444{% endif %});">
+                        {{ m.member_name|first|upper }}
+                    </div>
+                    <div style="flex:1; min-width:0;">
+                        <div style="color:#fff; font-weight:600; font-size:14px;">{{ m.member_name }}</div>
+                        <div style="color:#707080; font-size:12px;">
+                            {% if m.booking.member_email %}<i class="fa fa-envelope me-1"></i>{{ m.booking.member_email }}{% else %}Booked {{ m.booking.booking_date|date:"d M Y" }}{% endif %}
+                            {% if m.attendance %}&nbsp;·&nbsp;<span style="color:#2dce89;">In: {{ m.attendance.check_in_time|time:"H:i" }}</span>{% endif %}
+                        </div>
+                    </div>
+                    <div style="flex-shrink:0; margin:0 12px;">
+                        {% if m.is_present %}<span class="att-badge present-badge">✓ Present</span>{% else %}<span class="att-badge absent-badge">✗ Absent</span>{% endif %}
+                    </div>
+                    <div style="flex-shrink:0;">
+                        <form method="POST" action="{% url 'trainer-mark-attendance' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="gym_class_id" value="{{ gym_class.id }}">
+                            {% if m.user_id %}<input type="hidden" name="member_user_id" value="{{ m.user_id }}">{% endif %}
+                            <input type="hidden" name="member_name" value="{{ m.member_name }}">
+                            {% if not m.is_present %}
+                            <input type="hidden" name="action" value="mark_present">
+                            <button type="submit" class="att-btn mark-present-btn"><i class="fa fa-check me-1"></i> Mark Present</button>
+                            {% else %}
+                            <input type="hidden" name="action" value="mark_absent">
+                            <button type="submit" class="att-btn mark-absent-btn"><i class="fa fa-times me-1"></i> Undo</button>
+                            {% endif %}
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div style="text-align:center; padding:50px 20px; color:#555;">
+                    <i class="fa fa-user-o" style="font-size:44px; display:block; margin-bottom:12px; opacity:.4;"></i>
+                    <p style="font-size:14px; margin:0;">No members have booked this class yet.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.ip-mini { background:linear-gradient(145deg,#1a1a2e,#16213e); border:1px solid rgba(255,255,255,0.06); border-radius:12px; padding:16px; text-align:center; }
+.ip-mini-num { font-family:'Oswald',sans-serif; font-size:26px; font-weight:700; }
+.ip-mini-lbl { font-size:11px; color:#808090; text-transform:uppercase; letter-spacing:.8px; }
+.ip-card { background:linear-gradient(145deg,#1a1a2e,#16213e); border-radius:16px; border:1px solid rgba(255,255,255,0.07); overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,0.3); }
+.ip-card-header { padding:18px 22px; border-bottom:1px solid rgba(255,255,255,0.07); display:flex; align-items:center; justify-content:space-between; }
+.ip-card-title { color:#fff; font-family:'Oswald',sans-serif; font-size:15px; margin:0; letter-spacing:.5px; }
+.ip-card-body { padding:16px 22px; }
+.attendance-row { display:flex; align-items:center; padding:12px 8px; border-bottom:1px solid rgba(255,255,255,0.05); gap:12px; border-radius:8px; }
+.attendance-row:last-child { border-bottom:none; }
+.attendance-row.present { background:rgba(45,206,137,0.04); }
+.att-avatar { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Oswald',sans-serif; font-size:16px; font-weight:700; color:#fff; flex-shrink:0; }
+.att-badge { font-size:10px; font-weight:700; padding:3px 10px; border-radius:20px; white-space:nowrap; }
+.present-badge { background:rgba(45,206,137,0.15); color:#2dce89; border:1px solid rgba(45,206,137,0.3); }
+.absent-badge { background:rgba(255,255,255,0.06); color:#888; border:1px solid rgba(255,255,255,0.1); }
+.att-btn { border:none; border-radius:8px; padding:6px 12px; font-size:11px; font-weight:700; cursor:pointer; white-space:nowrap; transition:all .2s; }
+.mark-present-btn { background:linear-gradient(135deg,#2dce89,#2dcecc); color:#fff; }
+.mark-present-btn:hover { transform:translateY(-1px); box-shadow:0 4px 15px rgba(45,206,137,0.4); }
+.mark-absent-btn { background:rgba(255,80,80,0.15); color:#ff5555; border:1px solid rgba(255,80,80,0.25); }
+.mark-absent-btn:hover { background:rgba(255,80,80,0.25); }
+</style>
+{% endblock %}

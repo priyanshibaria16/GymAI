@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ gym_class.name|default:"Classes" }} | IronPeak Fitness Studio{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-section set-bg" data-setbg="{% static 'img/breadcrumb-bg.jpg' %}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="breadcrumb-text">
+                    <h2>Classes detail</h2>
+                    <div class="bt-option">
+                        <a href="{% url 'index.html' %}">Home</a>
+                        <a href="{% url 'class_timetable.html' %}">Classes</a>
+                        <span>{{ gym_class.name|default:"Timetable" }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
+
+<!-- Class Details Section Begin -->
+<section class="class-details-section spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                {% if gym_class %}
+                <div class="class-details-text">
+                    <div class="cd-text">
+                        <div class="cd-single-item">
+                            <h3>{{ gym_class.name }}</h3>
+                            <p>{{ gym_class.description }}</p>
+                        </div>
+                        <div class="cd-single-item">
+                            <h3>Your Coach</h3>
+                            <p>{{ gym_class.trainer }} leads every session of this class at IronPeak.
+                                Arrive 10 minutes early for your first session - the coach will run a
+                                quick level check and scale the workout to you.</p>
+                        </div>
+                    </div>
+                    <div class="cd-trainer">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="cd-trainer-pic">
+                                    <img src="{% static 'img/classes/class-details/trainer-profile.jpg' %}" alt="{{ gym_class.trainer }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="cd-trainer-text">
+                                    <div class="trainer-title">
+                                        <h4>{{ gym_class.trainer }}</h4>
+                                        <span>IronPeak Coach</span>
+                                    </div>
+                                    <p>Certified coach on the IronPeak floor. This class runs every
+                                        {{ gym_class.schedule_day }} - spots are limited, so book ahead.</p>
+                                    <ul class="trainer-info">
+                                        <li><span>Day</span>{{ gym_class.schedule_day }}</li>
+                                        <li><span>Time</span>{{ gym_class.schedule_time|time:"g:i A" }}</li>
+                                        <li><span>Duration</span>{{ gym_class.duration_minutes }} min</li>
+                                        <li><span>Seats</span>{{ gym_class.current_enrolled }} / {{ gym_class.capacity }} booked</li>
+                                    </ul>
+                                    <a href="{% url 'book-class' gym_class.pk %}" class="primary-btn btn-normal">Book This Class</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="ip-empty-state text-center" style="padding:48px 0;">
+                    <i class="fa fa-calendar-o fa-3x" style="color:#a0a0a0;"></i>
+                    <h4>No classes scheduled yet</h4>
+                    <p>New class announcements go out through our newsletter - subscribe from the footer below.</p>
+                    <a href="{% url 'class_timetable.html' %}" class="primary-btn btn-normal">View Timetable</a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-lg-4 col-md-8">
+                <div class="sidebar-option">
+                    <div class="so-latest">
+                        <h5 class="title">This week at IronPeak</h5>
+                        {% for cls in classes %}
+                        <div class="latest-item">
+                            <div class="li-text">
+                                <h6><a href="{% url 'book-class' cls.pk %}">{{ cls.name }}</a></h6>
+                                <span class="li-time">{{ cls.schedule_day }}, {{ cls.schedule_time|time:"g:i A" }} &middot; {{ cls.trainer }}</span>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p style="color:#a0a0a0;">The weekly schedule is being finalised.</p>
+                        {% endfor %}
+                    </div>
+                    <div class="so-banner set-bg" data-setbg="{% static 'img/sidebar-banner.jpg' %}">
+                        <h5>Train smarter at IronPeak</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Class Details Section End -->
+
+<!-- Class Timetable CTA Section Begin -->
+<section class="class-timetable-section class-details-timetable spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="class-details-timetable_title">
+                    <h5>Want the full weekly schedule?</h5>
+                    <p style="color:#a0a0a0;">8+ classes every week across yoga, HIIT, strength, CrossFit, boxing and dance.</p>
+                    <a href="{% url 'class_timetable.html' %}" class="primary-btn btn-normal">View Full Timetable</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Class Timetable CTA Section End -->
+
+<!-- Get In Touch section is rendered by base.html -->
+{% endblock content %}

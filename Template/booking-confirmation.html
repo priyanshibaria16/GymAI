@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-section set-bg" data-setbg="{% static 'img/breadcrumb-bg.jpg' %}">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb-text">
+                        <h2>Booking Confirmation</h2>
+                        <div class="bt-option">
+                            <a href="{% url 'index.html' %}">Home</a>
+                            <a href="{% url 'class-timetable' %}">Class Timetable</a>
+                            <span>Booking</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Booking Section Begin -->
+    <section class="spad">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+
+                    {% if success %}
+                    <!-- Booking Success -->
+                    <div style="background: #1c1c2e; border-radius: 12px; padding: 40px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                        <div style="width: 80px; height: 80px; background: rgba(45, 206, 137, 0.2); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fa fa-check" style="font-size: 40px; color: #2dce89;"></i>
+                        </div>
+                        <h3 style="color: #fff; font-family: 'Oswald', sans-serif; margin-bottom: 10px;">BOOKING CONFIRMED!</h3>
+                        <p style="color: #a0a0a0; margin-bottom: 25px;">Your class has been successfully booked.</p>
+                        
+                        <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 20px; text-align: left; margin-bottom: 25px;">
+                            <table style="width: 100%; color: #ccc;">
+                                <tr>
+                                    <td style="padding: 8px 0; color: #a0a0a0;">Member Name:</td>
+                                    <td style="padding: 8px 0; text-align: right; color: #fff; font-weight: 600;">{{ booking.member_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px 0; color: #a0a0a0;">Class:</td>
+                                    <td style="padding: 8px 0; text-align: right; color: #fff; font-weight: 600;">{{ gym_class.name }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px 0; color: #a0a0a0;">Trainer:</td>
+                                    <td style="padding: 8px 0; text-align: right; color: #fff; font-weight: 600;">{{ gym_class.trainer }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px 0; color: #a0a0a0;">Day & Time:</td>
+                                    <td style="padding: 8px 0; text-align: right; color: #fff; font-weight: 600;">{{ gym_class.schedule_day }} at {{ gym_class.schedule_time }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px 0; color: #a0a0a0;">Status:</td>
+                                    <td style="padding: 8px 0; text-align: right;">
+                                        <span style="background: rgba(45, 206, 137, 0.2); color: #2dce89; padding: 4px 12px; border-radius: 20px; font-size: 13px;">{{ booking.status }}</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <a href="{% url 'class-timetable' %}" style="display: inline-block; background: linear-gradient(135deg, #f36100, #f5365c); color: white; padding: 12px 30px; border-radius: 25px; text-decoration: none; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+                            Back to Timetable
+                        </a>
+                    </div>
+
+                    {% elif error %}
+                    <!-- Booking Error -->
+                    <div style="background: #1c1c2e; border-radius: 12px; padding: 40px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                        <div style="width: 80px; height: 80px; background: rgba(231, 76, 60, 0.2); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fa fa-times" style="font-size: 40px; color: #e74c3c;"></i>
+                        </div>
+                        <h3 style="color: #fff; font-family: 'Oswald', sans-serif; margin-bottom: 10px;">CLASS IS FULL</h3>
+                        <p style="color: #a0a0a0; margin-bottom: 25px;">{{ error }}</p>
+                        <a href="{% url 'class-timetable' %}" style="display: inline-block; background: linear-gradient(135deg, #f36100, #f5365c); color: white; padding: 12px 30px; border-radius: 25px; text-decoration: none; font-weight: 600;">
+                            View Other Classes
+                        </a>
+                    </div>
+
+                    {% else %}
+                    <!-- Booking Form -->
+                    <div style="background: #1c1c2e; border-radius: 12px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                        <div class="section-title">
+                            <span>Book Your Spot</span>
+                            <h2>{{ gym_class.name|upper }}</h2>
+                        </div>
+                        
+                        <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 15px; margin-bottom: 25px;">
+                            <p style="color: #ccc; margin: 5px 0;"><i class="fa fa-user" style="color: #f5365c; width: 25px;"></i> Trainer: <strong style="color: #fff;">{{ gym_class.trainer }}</strong></p>
+                            <p style="color: #ccc; margin: 5px 0;"><i class="fa fa-clock-o" style="color: #2dce89; width: 25px;"></i> {{ gym_class.schedule_day }} at {{ gym_class.schedule_time }}</p>
+                            <p style="color: #ccc; margin: 5px 0;"><i class="fa fa-ticket" style="color: #5e72e4; width: 25px;"></i> Available Slots: <strong style="color: #2dce89;">{{ gym_class.available_slots }} / {{ gym_class.capacity }}</strong></p>
+                        </div>
+
+                        <form method="POST" action="{% url 'book-class' gym_class.id %}">
+                            {% csrf_token %}
+                            <div class="chart-calculate-form">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <input type="text" name="member_name" placeholder="Your Name" required style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff;">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input type="email" name="member_email" placeholder="Your Email (optional)" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff;">
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <button type="submit">Book Now</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Booking Section End -->
+
+{% endblock content %}

@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-section set-bg" data-setbg="{% static 'img/breadcrumb-bg.jpg' %}">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb-text">
+                        <h2>Testimonials</h2>
+                        <div class="bt-option">
+                            <a href="{% url 'index.html' %}">Home</a>
+                            <span>Testimonials</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Testimonials Section Begin -->
+    <section class="spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title">
+                        <span>What Our Members Say</span>
+                        <h2>TESTIMONIALS & REVIEWS</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rating Summary Row -->
+            <div class="row mb-5">
+                <div class="col-lg-4 mb-4">
+                    <div style="background: #1c1c2e; border-radius: 12px; padding: 30px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                        <h2 style="font-family: 'Oswald', sans-serif; font-size: 60px; color: #ffd600; margin: 0;">{{ avg_rating }}</h2>
+                        <div style="margin: 10px 0;">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= avg_rating %}
+                                    <i class="fa fa-star" style="color: #ffd600; font-size: 20px;"></i>
+                                {% else %}
+                                    <i class="fa fa-star-o" style="color: #555; font-size: 20px;"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <p style="color: #a0a0a0; margin: 0;">Based on {{ total_reviews }} reviews</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div style="background: #1c1c2e; border-radius: 12px; padding: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                        <h4 style="color: #fff; font-family: 'Oswald', sans-serif; margin-bottom: 20px;">Rating Breakdown</h4>
+                        {% for star in star_breakdown %}
+                        <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                            <span style="color: #ffd600; width: 60px; font-size: 13px;">{{ star.stars }} <i class="fa fa-star"></i></span>
+                            <div style="flex: 1; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; margin: 0 10px; overflow: hidden;">
+                                <div style="height: 100%; width: {{ star.percentage }}%; background: linear-gradient(90deg, #ffd600, #ff9100); border-radius: 4px;"></div>
+                            </div>
+                            <span style="color: #a0a0a0; width: 30px; text-align: right; font-size: 13px;">{{ star.count }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div style="background: #1c1c2e; border-radius: 12px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                        <h4 style="color: #fff; font-family: 'Oswald', sans-serif; margin-bottom: 20px;">
+                            <i class="fa fa-bar-chart" style="color: #5e72e4;"></i> Rating Distribution
+                        </h4>
+                        <canvas id="ratingChart" height="160"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reviews Grid -->
+            <div class="row mb-5">
+                {% for review in reviews %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div style="background: #1c1c2e; border-radius: 12px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); height: 100%; position: relative;">
+                        <div style="position: absolute; top: 20px; right: 20px; font-size: 30px; color: rgba(255,255,255,0.05);">
+                            <i class="fa fa-quote-right"></i>
+                        </div>
+                        <div style="margin-bottom: 12px;">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= review.rating %}
+                                    <i class="fa fa-star" style="color: #ffd600; font-size: 14px;"></i>
+                                {% else %}
+                                    <i class="fa fa-star-o" style="color: #555; font-size: 14px;"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <p style="color: #ccc; font-style: italic; line-height: 1.6; margin-bottom: 15px;">"{{ review.review_text }}"</p>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #f5365c, #f56036); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 16px;">
+                                {{ review.member_name|first }}
+                            </div>
+                            <div>
+                                <p style="color: #fff; margin: 0; font-weight: 600;">{{ review.member_name }}</p>
+                                <p style="color: #a0a0a0; margin: 0; font-size: 12px;">{{ review.date|date:"d M Y" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-lg-12 text-center" style="padding: 40px;">
+                    <p style="color: #a0a0a0;">No reviews yet. Be the first to share your experience!</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Submit Review Form -->
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div style="background: #1c1c2e; border-radius: 12px; padding: 35px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                        <div class="section-title" style="margin-bottom: 20px;">
+                            <span>Share Your Experience</span>
+                            <h2>WRITE A REVIEW</h2>
+                        </div>
+                        
+                        {% if submitted %}
+                        <div style="background: rgba(45, 206, 137, 0.1); border: 1px solid rgba(45, 206, 137, 0.3); border-radius: 8px; padding: 15px; margin-bottom: 20px; text-align: center;">
+                            <i class="fa fa-check-circle" style="color: #2dce89; font-size: 20px;"></i>
+                            <p style="color: #2dce89; margin: 5px 0 0;">Thank you! Your review has been submitted for approval.</p>
+                        </div>
+                        {% endif %}
+
+                        <form method="POST" action="{% url 'testimonials' %}">
+                            {% csrf_token %}
+                            <div class="chart-calculate-form">
+                                <div class="row">
+                                    <div class="col-sm-6 mb-3">
+                                        <label style="color: #a0a0a0; font-size: 12px; text-transform: uppercase; display: block; margin-bottom: 5px;">Your Name</label>
+                                        <input type="text" name="member_name" placeholder="Enter your name" required style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff;">
+                                    </div>
+                                    <div class="col-sm-6 mb-3">
+                                        <label style="color: #a0a0a0; font-size: 12px; text-transform: uppercase; display: block; margin-bottom: 5px;">Rating</label>
+                                        <select name="rating" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; width: 100%; padding: 12px; font-family: 'Muli', sans-serif;">
+                                            <option value="5" style="background: #1c1c2e;">⭐⭐⭐⭐⭐ - Excellent</option>
+                                            <option value="4" style="background: #1c1c2e;">⭐⭐⭐⭐ - Very Good</option>
+                                            <option value="3" style="background: #1c1c2e;">⭐⭐⭐ - Good</option>
+                                            <option value="2" style="background: #1c1c2e;">⭐⭐ - Fair</option>
+                                            <option value="1" style="background: #1c1c2e;">⭐ - Poor</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-12 mb-3">
+                                        <label style="color: #a0a0a0; font-size: 12px; text-transform: uppercase; display: block; margin-bottom: 5px;">Your Review</label>
+                                        <textarea name="review_text" rows="4" placeholder="Share your experience with us..." required style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; width: 100%; padding: 12px; resize: vertical; font-family: 'Muli', sans-serif; border-radius: 0;"></textarea>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <button type="submit">Submit Review</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Testimonials Section End -->
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        Chart.defaults.color = '#a0a0a0';
+        Chart.defaults.font.family = "'Muli', sans-serif";
+
+        new Chart(document.getElementById('ratingChart'), {
+            type: 'bar',
+            data: {
+                labels: {{ rating_labels|safe }},
+                datasets: [{
+                    label: 'Reviews',
+                    data: {{ rating_data|safe }},
+                    backgroundColor: [
+                        'rgba(231, 76, 60, 0.7)',
+                        'rgba(241, 196, 15, 0.7)',
+                        'rgba(243, 156, 18, 0.7)',
+                        'rgba(46, 204, 113, 0.7)',
+                        'rgba(39, 174, 96, 0.7)',
+                    ],
+                    borderRadius: 6,
+                    barThickness: 20,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { stepSize: 1 } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    </script>
+
+{% endblock content %}

@@ -1,0 +1,540 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="IronPeak Fitness Studio - Ahmedabad's AI-powered gym. Personal training, group classes, BMI analytics and membership plans from Rs.900/month.">
+    <meta name="keywords" content="IronPeak, gym Ahmedabad, fitness studio, personal training, BMI calculator, group classes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}IronPeak Fitness Studio | Ahmedabad{% endblock %}</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Muli:300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald:300,400,500,600,700&display=swap" rel="stylesheet">
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/flaticon.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/barfiller.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/slicknav.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/ip-polish.css' %}" type="text/css">
+
+    <style>
+    /* ================================================================
+       IRONPEAK NAVBAR — Custom Styles
+    ================================================================ */
+
+    /* Sticky Header */
+    #ipHeader {
+        position: sticky;
+        top: 0;
+        z-index: 9999;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 2px 20px rgba(0,0,0,0.45);
+        transition: box-shadow 0.3s;
+    }
+
+    /* ---- User Avatar Pill Button ---- */
+    .ip-user-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.14);
+        border-radius: 50px;
+        padding: 6px 14px 6px 6px;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        white-space: nowrap;
+    }
+    .ip-user-pill:hover, .ip-user-pill.show {
+        background: rgba(255,255,255,0.14);
+        border-color: rgba(245,54,92,0.5);
+        box-shadow: 0 0 0 3px rgba(245,54,92,0.12);
+    }
+    .ip-avatar {
+        width: 30px; height: 30px; border-radius: 50%;
+        background: linear-gradient(135deg, #f5365c, #f56036);
+        display: inline-flex; align-items: center; justify-content: center;
+        font-family: 'Oswald', sans-serif;
+        font-size: 13px; font-weight: 700; color: #fff;
+        flex-shrink: 0;
+    }
+    .ip-username {
+        color: #fff; font-size: 13px; font-weight: 600;
+        max-width: 110px; overflow: hidden; text-overflow: ellipsis;
+    }
+    .ip-chevron { font-size: 11px; color: #909090; transition: transform 0.25s; }
+    .ip-user-pill.show .ip-chevron { transform: rotate(180deg); }
+
+    /* Role badges */
+    .ip-role-badge {
+        font-size: 9px; font-weight: 800; padding: 2px 7px;
+        border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .ip-role-admin   { background: rgba(245,54,92,0.2);  color: #f5365c; border: 1px solid rgba(245,54,92,0.35); }
+    .ip-role-trainer { background: rgba(94,114,228,0.2); color: #8898e4; border: 1px solid rgba(94,114,228,0.35); }
+    .ip-role-member  { background: rgba(45,206,137,0.2); color: #2dce89; border: 1px solid rgba(45,206,137,0.35); }
+
+    /* ---- Dropdown Menu ---- */
+    .ip-dropdown {
+        background: #1a1a2e;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 14px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+        min-width: 240px;
+        padding: 8px;
+        margin-top: 10px !important;
+        overflow: hidden;
+    }
+    .ip-dropdown-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.04);
+        margin-bottom: 4px;
+    }
+    .ip-avatar-lg {
+        width: 40px; height: 40px; border-radius: 50%;
+        background: linear-gradient(135deg, #f5365c, #f56036);
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Oswald', sans-serif;
+        font-size: 18px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .ip-divider {
+        border-color: rgba(255,255,255,0.08) !important;
+        margin: 5px 0 !important;
+    }
+    .ip-drop-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 12px;
+        border-radius: 9px;
+        color: #ccc !important;
+        font-size: 13px;
+        text-decoration: none;
+        transition: all 0.2s;
+        margin-bottom: 2px;
+    }
+    .ip-drop-item:hover {
+        background: rgba(255,255,255,0.06);
+        color: #fff !important;
+        text-decoration: none;
+        transform: translateX(3px);
+    }
+    .ip-drop-icon {
+        width: 28px; height: 28px; border-radius: 7px;
+        display: inline-flex; align-items: center; justify-content: center;
+        font-size: 12px; flex-shrink: 0;
+    }
+    .ip-logout-item { color: #e74c3c !important; }
+    .ip-logout-item:hover { background: rgba(231,76,60,0.1) !important; color: #ff6b6b !important; }
+
+    /* ---- Standalone Logout Button ---- */
+    .ip-logout-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: #fff !important;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        letter-spacing: 0.5px;
+        transition: all 0.25s ease;
+        border: 1px solid rgba(231,76,60,0.5);
+        text-transform: uppercase;
+    }
+    .ip-logout-btn:hover {
+        background: linear-gradient(135deg, #c0392b, #a93226);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(231,76,60,0.4);
+        color: #fff !important;
+        text-decoration: none;
+    }
+
+    /* ---- Admin Add Member button ---- */
+    .ip-nav-add-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 14px;
+        background: rgba(45,206,137,0.12);
+        color: #2dce89 !important;
+        border: 1px solid rgba(45,206,137,0.3);
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        letter-spacing: 0.4px;
+        transition: all 0.25s ease;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+    .ip-nav-add-btn:hover {
+        background: rgba(45,206,137,0.22);
+        border-color: #2dce89;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(45,206,137,0.3);
+        text-decoration: none;
+        color: #2dce89 !important;
+    }
+
+    /* ---- Sign In / Join buttons ---- */
+    .ip-signin-btn {
+        display: inline-flex; align-items: center;
+        padding: 8px 18px;
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.18);
+        border-radius: 50px;
+        color: #fff !important;
+        font-size: 13px; font-weight: 600;
+        text-decoration: none;
+        transition: all 0.25s;
+    }
+    .ip-signin-btn:hover { background: rgba(255,255,255,0.14); text-decoration: none; color: #fff !important; }
+
+    .ip-signup-btn {
+        display: inline-flex; align-items: center;
+        padding: 8px 18px;
+        background: linear-gradient(135deg, #f5365c, #f56036);
+        border: none;
+        border-radius: 50px;
+        color: #fff !important;
+        font-size: 13px; font-weight: 700;
+        text-decoration: none;
+        transition: all 0.25s;
+        box-shadow: 0 4px 15px rgba(245,54,92,0.3);
+    }
+    .ip-signup-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(245,54,92,0.5);
+        text-decoration: none; color: #fff !important;
+    }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Offcanvas Menu Section Begin -->
+    <div class="offcanvas-menu-overlay"></div>
+    <div class="offcanvas-menu-wrapper">
+        <div class="canvas-close">
+            <i class="fa fa-close"></i>
+        </div>
+        <div class="canvas-search search-switch">
+            <i class="fa fa-search"></i>
+        </div>
+        <nav class="canvas-menu mobile-menu">
+            <ul>
+                <li><a href="{% url 'index.html' %}">Home</a></li>
+                <li><a href="{% url 'role_dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'bmi-calculator.html' %}">BMI Calculator</a></li>
+                <li><a href="{% url 'class_timetable.html' %}">Classes</a></li>
+                <li><a href="{% url 'chatbot' %}">AI Chatbot</a></li>
+                <li><a href="{% url 'member-progress' %}">Progress Tracker</a></li>
+                {% if user.is_authenticated and user.profile.role == 'ADMIN' %}
+                    <li><a href="{% url 'payment-dashboard' %}">Payments</a></li>
+                    <li><a href="{% url 'admin_user_list' %}">User Management</a></li>
+                    <li><a href="{% url 'reports' %}">Reports</a></li>
+                {% endif %}
+                <li><a href="{% url 'testimonials' %}">Reviews</a></li>
+                <li><a href="{% url 'contact.html' %}">Contact</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'profile' %}">Profile ({{ user.username }})</a></li>
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Sign In</a></li>
+                    <li><a href="{% url 'signup' %}">Sign Up</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+  
+        <div id="mobile-menu-wrap"></div>
+        <div class="canvas-social">
+            <a href="#"><i class="fa fa-facebook"></i></a>
+            <a href="#"><i class="fa fa-twitter"></i></a>
+            <a href="#"><i class="fa fa-youtube-play"></i></a>
+            <a href="#"><i class="fa fa-instagram"></i></a>
+        </div>
+    </div>
+    <!-- Offcanvas Menu Section End -->
+
+    <!-- Header Section Begin -->
+    <header class="header-section" id="ipHeader">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-lg-2">
+                    <div class="logo">
+                        <a href="{% url 'index.html' %}">
+                            <img src="{% static 'img/logo.png' %}" alt="IronPeak Fitness Studio">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <nav class="nav-menu">
+                        <ul>
+                            <li class="active"><a href="{% url 'index.html' %}">Home</a></li>
+                            <li><a href="{% url 'role_dashboard' %}">Dashboard</a></li>
+                            <li><a href="{% url 'bmi-calculator.html' %}">BMI Calc</a></li>
+                            <li><a href="{% url 'class_timetable.html' %}">Classes</a></li>
+                            <li><a href="{% url 'chatbot' %}">AI Chatbot</a></li>
+                            <li><a href="{% url 'member-progress' %}">Progress</a></li>
+                            {% if user.is_authenticated and user.profile.role == 'ADMIN' %}
+                                <li><a href="{% url 'payment-dashboard' %}">Payments</a></li>
+                                <li><a href="{% url 'admin_user_list' %}">Users</a></li>
+                                <li><a href="{% url 'reports' %}">Reports</a></li>
+                            {% endif %}
+                            <li><a href="{% url 'testimonials' %}">Reviews</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-lg-3 text-end">
+                    <div class="top-option d-flex align-items-center justify-content-end gap-2">
+                        {% if user.is_authenticated %}
+                            <!-- User Avatar Dropdown -->
+                            <div class="dropdown d-inline-block">
+                                <button class="ip-user-pill dropdown-toggle" id="userMenuLink"
+                                    data-bs-toggle="dropdown" data-toggle="dropdown"
+                                    aria-expanded="false" aria-haspopup="true">
+                                    <span class="ip-avatar">
+                                        {{ user.first_name|first|upper|default:user.username|first|upper }}
+                                    </span>
+                                    <span class="ip-username">{{ user.get_full_name|default:user.username|truncatechars:12 }}</span>
+                                    <span class="ip-role-badge ip-role-{{ user.profile.role|lower }}">{{ user.profile.role }}</span>
+                                    <i class="fa fa-angle-down ip-chevron"></i>
+                                </button>
+                                <ul class="dropdown-menu ip-dropdown" aria-labelledby="userMenuLink">
+                                    <!-- User info header -->
+                                    <li class="ip-dropdown-header">
+                                        <div class="ip-avatar-lg">{{ user.first_name|first|upper|default:user.username|first|upper }}</div>
+                                        <div>
+                                            <div style="color:#fff; font-weight:700; font-size:13px;">{{ user.get_full_name|default:user.username }}</div>
+                                            <div style="color:#909090; font-size:11px;">{{ user.email|default:user.username }}</div>
+                                        </div>
+                                    </li>
+                                    <li><hr class="ip-divider"></li>
+                                    <li><a class="ip-drop-item" href="{% url 'role_dashboard' %}">
+                                        <span class="ip-drop-icon" style="background:rgba(94,114,228,0.2);"><i class="fa fa-tachometer" style="color:#5e72e4;"></i></span> Dashboard
+                                    </a></li>
+                                    <li><a class="ip-drop-item" href="{% url 'profile' %}">
+                                        <span class="ip-drop-icon" style="background:rgba(45,206,137,0.2);"><i class="fa fa-id-card" style="color:#2dce89;"></i></span> My Profile
+                                    </a></li>
+                                    <li><a class="ip-drop-item" href="{% url 'change_password' %}">
+                                        <span class="ip-drop-icon" style="background:rgba(243,156,18,0.2);"><i class="fa fa-key" style="color:#f39c12;"></i></span> Change Password
+                                    </a></li>
+                                    {% if user.profile.role == 'ADMIN' %}
+                                    <li><hr class="ip-divider"></li>
+                                    <li><a class="ip-drop-item" href="{% url 'admin_user_list' %}">
+                                        <span class="ip-drop-icon" style="background:rgba(245,54,92,0.2);"><i class="fa fa-users" style="color:#f5365c;"></i></span> Manage Users
+                                    </a></li>
+                                    <li><a class="ip-drop-item" href="{% url 'admin-class-list' %}">
+                                        <span class="ip-drop-icon" style="background:rgba(94,114,228,0.2);"><i class="fa fa-calendar-check-o" style="color:#5e72e4;"></i></span> Manage Classes
+                                    </a></li>
+                                    <li><a class="ip-drop-item" href="{% url 'admin-automations' %}">
+                                        <span class="ip-drop-icon" style="background:rgba(130,94,228,0.2);"><i class="fa fa-magic" style="color:#825ee4;"></i></span> AI Automations
+                                    </a></li>
+                                    <li><a class="ip-drop-item" href="/admin/" target="_blank">
+                                        <span class="ip-drop-icon" style="background:rgba(243,156,18,0.2);"><i class="fa fa-cogs" style="color:#f39c12;"></i></span> Django Admin
+                                    </a></li>
+                                    {% endif %}
+                                    <li><hr class="ip-divider"></li>
+                                    <li><a class="ip-drop-item ip-logout-item" href="{% url 'logout' %}">
+                                        <span class="ip-drop-icon" style="background:rgba(231,76,60,0.2);"><i class="fa fa-sign-out" style="color:#e74c3c;"></i></span> Sign Out
+                                    </a></li>
+                                </ul>
+                            </div>
+
+                            <!-- Standalone Logout Button -->
+                            <a href="{% url 'logout' %}" class="ip-logout-btn" title="Logout">
+                                <i class="fa fa-power-off"></i>
+                                <span>Logout</span>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="ip-signin-btn">Sign In</a>
+                            <a href="{% url 'signup' %}" class="ip-signup-btn">Join Now</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="canvas-open">
+                <i class="fa fa-bars"></i>
+            </div>
+        </div>
+    </header>
+    <!-- Header End -->
+
+    <!-- Django Flash Messages -->
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags|default:'info' }}{% endif %} alert-dismissible fade show shadow-sm border-0" role="alert">
+            <i class="fa fa-info-circle me-2"></i> {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% block content %}
+    {% endblock content %}
+
+    <!-- Get In Touch Section Begin -->
+    <div class="gettouch-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="gt-text">
+                        <i class="fa fa-map-marker"></i>
+                        <p>3rd Floor, Sunrise Plaza, Prahlad Nagar, Ahmedabad 380015</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="gt-text">
+                        <i class="fa fa-mobile"></i>
+                        <ul>
+                            <li>+91 98250 44321</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="gt-text email">
+                        <i class="fa fa-envelope"></i>
+                        <p>hello@ironpeakfitness.in</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Get In Touch Section End -->
+
+    <!-- Footer Section Begin -->
+ <section class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="fs-about">
+                        <div class="fa-logo">
+                            <a href="{% url 'index.html' %}"><img src="{% static 'img/logo.png' %}" alt="IronPeak Fitness Studio"></a>
+                        </div>
+                        <p>IronPeak Fitness Studio - Ahmedabad's AI-powered gym since 2019.
+                            Serious training, certified coaches and measurable results,
+                            Mon-Sat 5:00 AM - 10:00 PM, Sun 7:00 AM - 12:00 PM.</p>
+                        <div class="fa-social">
+                            <a href="#"><i class="fa fa-facebook"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-youtube-play"></i></a>
+                            <a href="#"><i class="fa fa-instagram"></i></a>
+                            <a href="#"><i class="fa  fa-envelope-o"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-6">
+                    <div class="fs-widget">
+                        <h4>Useful links</h4>
+                        <ul>
+                            <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                            <li><a href="{% url 'bmi-calculator.html' %}">BMI Calculator</a></li>
+                            <li><a href="{% url 'class_timetable.html' %}">Classes</a></li>
+                            <li><a href="{% url 'member-progress' %}">Progress Tracker</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-6">
+                    <div class="fs-widget">
+                        <h4>Modules</h4>
+                        <ul>
+                            {% if user.is_authenticated and user.profile.role == 'ADMIN' or user.is_superuser %}
+                            <li><a href="{% url 'payment-dashboard' %}">Payments</a></li>
+                            {% endif %}
+                            <li><a href="{% url 'testimonials' %}">Testimonials</a></li>
+                            {% if user.is_authenticated and user.profile.role == 'ADMIN' or user.is_superuser %}
+                            <li><a href="{% url 'reports' %}">Reports Export</a></li>
+                            {% endif %}
+                            {% if user.is_authenticated and user.profile.role == 'TRAINER' %}
+                            <li><a href="{% url 'trainer-dashboard' %}">Trainer Panel</a></li>
+                            {% endif %}
+                            <li><a href="{% url 'contact.html' %}">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="fs-widget">
+                        <h4>Newsletter</h4>
+                        <p style="color: #a0a0a0; font-size: 14px; margin-bottom: 15px;">Subscribe to get health tips, fitness guides, and gym updates!</p>
+                        <form method="POST" action="{% url 'subscribe' %}" style="display: flex; gap: 5px;">
+                            {% csrf_token %}
+                            <input type="email" name="email" placeholder="Enter your email" required style="flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 10px 15px; border-radius: 4px; font-size: 13px;">
+                            <button type="submit" style="background: linear-gradient(135deg, #f36100, #f5365c); color: white; border: none; padding: 10px 18px; border-radius: 4px; cursor: pointer; font-weight: 600;">Subscribe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="copyright-text">
+                        <p>Copyright &copy; 2025&ndash;2026 IronPeak Fitness Studio. All rights reserved. | Designed &amp; Developed by Tech Innovation</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Footer Section End -->
+
+    <!-- Search model Begin -->
+    <div class="search-model">
+        <div class="h-100 d-flex align-items-center justify-content-center">
+            <div class="search-close-switch">+</div>
+            <form class="search-model-form">
+                <input type="text" id="search-input" placeholder="Search here.....">
+            </form>
+        </div>
+    </div>
+    <!-- Search model end -->
+
+    <!-- Js Plugins -->
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'js/masonry.pkgd.min.js' %}"></script>
+    <script src="{% static 'js/jquery.barfiller.js' %}"></script>
+    <script src="{% static 'js/jquery.slicknav.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/ip-polish.js' %}"></script>
+    <!-- AI Chatbot FAB -->
+    <a href="{% url 'chatbot' %}" style="position: fixed; bottom: 30px; right: 30px; background: #f5365c; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 15px rgba(245,54,92,0.6); z-index: 999; text-decoration: none; transition: transform 0.3s; animation: pulse 2s infinite;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+        <i class="fa fa-robot"></i>
+    </a>
+    <style>
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(245,54,92,0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(245,54,92,0); }
+            100% { box-shadow: 0 0 0 0 rgba(245,54,92,0); }
+        }
+    </style>
+</body>
+
+</html> 

@@ -1,0 +1,401 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-section set-bg" data-setbg="{% static 'img/breadcrumb-bg.jpg' %}">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb-text">
+                        <h2>Payment Dashboard</h2>
+                        <div class="bt-option">
+                            <a href="{% url 'index.html' %}">Home</a>
+                            <span>Payments</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Payment Dashboard Section Begin -->
+    <section class="spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title">
+                        <span>Financial Overview</span>
+                        <h2>PAYMENT & REVENUE TRACKER</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="row mb-5">
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="card text-center" style="background: linear-gradient(135deg, #2dce89, #2dcecc); border: none; border-radius: 12px; padding: 25px; color: white; box-shadow: 0 4px 20px rgba(45, 206, 137, 0.3);">
+                        <i class="fa fa-inr" style="font-size: 30px; margin-bottom: 8px;"></i>
+                        <h3 style="font-family: 'Oswald', sans-serif; font-size: 32px; margin: 0;">₹{{ total_revenue }}</h3>
+                        <p style="margin: 0; opacity: 0.9;">Total Revenue</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="card text-center" style="background: linear-gradient(135deg, #f39c12, #e67e22); border: none; border-radius: 12px; padding: 25px; color: white; box-shadow: 0 4px 20px rgba(243, 156, 18, 0.3);">
+                        <i class="fa fa-clock-o" style="font-size: 30px; margin-bottom: 8px;"></i>
+                        <h3 style="font-family: 'Oswald', sans-serif; font-size: 32px; margin: 0;">₹{{ pending_amount }}</h3>
+                        <p style="margin: 0; opacity: 0.9;">Pending Amount</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="card text-center" style="background: linear-gradient(135deg, #5e72e4, #825ee4); border: none; border-radius: 12px; padding: 25px; color: white; box-shadow: 0 4px 20px rgba(94, 114, 228, 0.3);">
+                        <i class="fa fa-exchange" style="font-size: 30px; margin-bottom: 8px;"></i>
+                        <h3 style="font-family: 'Oswald', sans-serif; font-size: 32px; margin: 0;">{{ total_transactions }}</h3>
+                        <p style="margin: 0; opacity: 0.9;">Total Transactions</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="card text-center" style="background: linear-gradient(135deg, #2dce89, #11cdef); border: none; border-radius: 12px; padding: 25px; color: white; box-shadow: 0 4px 20px rgba(45, 206, 137, 0.3);">
+                        <i class="fa fa-check-circle" style="font-size: 30px; margin-bottom: 8px;"></i>
+                        <h3 style="font-family: 'Oswald', sans-serif; font-size: 32px; margin: 0;">{{ completed_count }}</h3>
+                        <p style="margin: 0; opacity: 0.9;">Completed</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="row mb-5">
+                <div class="col-lg-8 mb-4">
+                    <div style="background: #1c1c2e; border-radius: 12px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                        <h4 style="color: #fff; font-family: 'Oswald', sans-serif; margin-bottom: 20px;">
+                            <i class="fa fa-line-chart" style="color: #2dce89;"></i> Revenue Trend
+                        </h4>
+                        <canvas id="revenueChart" height="120"></canvas>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div style="background: #1c1c2e; border-radius: 12px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); margin-bottom: 20px;">
+                        <h4 style="color: #fff; font-family: 'Oswald', sans-serif; margin-bottom: 20px;">
+                            <i class="fa fa-credit-card" style="color: #5e72e4;"></i> Payment Methods
+                        </h4>
+                        <canvas id="methodChart" height="150"></canvas>
+                    </div>
+                    <div style="background: #1c1c2e; border-radius: 12px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                        <h4 style="color: #fff; font-family: 'Oswald', sans-serif; margin-bottom: 20px;">
+                            <i class="fa fa-tasks" style="color: #f5365c;"></i> Payment Status
+                        </h4>
+                        <canvas id="statusChart" height="150"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Membership Churn Prediction Row -->
+            {% if churn_data %}
+            <div class="row mb-5">
+                <div class="col-lg-12">
+                    <div style="background: #1c1c2e; border-radius: 12px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+                            <h4 style="color: #fff; font-family: 'Oswald', sans-serif; margin: 0;">
+                                <i class="fa fa-user-times" style="color: #f5365c;"></i> Membership Churn Prediction
+                            </h4>
+                            <span style="background: rgba(94,114,228,0.2); color: #8898e4; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">
+                                <i class="fa fa-cogs"></i> AI Model: {{ churn_data.model_used }} · Accuracy {{ churn_data.model_accuracy }}
+                            </span>
+                        </div>
+                        <p style="color:#a0a0a0; font-size:13px; margin-bottom:20px;">
+                            Predictive retention risk for members based on attendance, inactivity, tenure and pending dues.
+                        </p>
+
+                        <!-- Churn KPI mini-cards -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-6 col-md-3">
+                                <div style="background: rgba(245,54,92,0.1); border:1px solid rgba(245,54,92,0.3); border-radius:10px; padding:18px; text-align:center;">
+                                    <h3 style="color:#f5365c; font-family:'Oswald',sans-serif; margin:0;">{{ high_risk_count }}</h3>
+                                    <small style="color:#a0a0a0; text-transform:uppercase; letter-spacing:0.5px;">High Risk Members</small>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div style="background: rgba(255,214,0,0.1); border:1px solid rgba(255,214,0,0.3); border-radius:10px; padding:18px; text-align:center;">
+                                    <h3 style="color:#ffd600; font-family:'Oswald',sans-serif; margin:0;">{{ churn_data.risk_distribution.Medium }}</h3>
+                                    <small style="color:#a0a0a0; text-transform:uppercase; letter-spacing:0.5px;">Medium Risk</small>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div style="background: rgba(45,206,137,0.1); border:1px solid rgba(45,206,137,0.3); border-radius:10px; padding:18px; text-align:center;">
+                                    <h3 style="color:#2dce89; font-family:'Oswald',sans-serif; margin:0;">{{ churn_data.risk_distribution.Low }}</h3>
+                                    <small style="color:#a0a0a0; text-transform:uppercase; letter-spacing:0.5px;">Low Risk</small>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div style="background: rgba(251,99,64,0.1); border:1px solid rgba(251,99,64,0.3); border-radius:10px; padding:18px; text-align:center;">
+                                    <h3 style="color:#fb6340; font-family:'Oswald',sans-serif; margin:0;">₹{{ revenue_at_risk }}</h3>
+                                    <small style="color:#a0a0a0; text-transform:uppercase; letter-spacing:0.5px;">Revenue At Risk</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Risk distribution chart -->
+                            <div class="col-lg-4 mb-4">
+                                <div style="background: rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:20px; height:100%;">
+                                    <h5 style="color:#fff; font-family:'Oswald',sans-serif; margin-bottom:15px;">Risk Distribution</h5>
+                                    <canvas id="churnRiskChart" height="200"></canvas>
+                                </div>
+                            </div>
+                            <!-- At-risk members table -->
+                            <div class="col-lg-8 mb-4">
+                                <div style="background: rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:20px; overflow-x:auto;">
+                                    <h5 style="color:#fff; font-family:'Oswald',sans-serif; margin-bottom:15px;">Top At-Risk Members</h5>
+                                    <table style="width:100%; border-collapse:collapse;">
+                                        <thead>
+                                            <tr style="border-bottom:2px solid rgba(255,255,255,0.1);">
+                                                <th style="padding:10px; color:#a0a0a0; text-align:left; font-size:12px; text-transform:uppercase;">Member</th>
+                                                <th style="padding:10px; color:#a0a0a0; text-align:left; font-size:12px; text-transform:uppercase;">Risk</th>
+                                                <th style="padding:10px; color:#a0a0a0; text-align:left; font-size:12px; text-transform:uppercase;">Days Inactive</th>
+                                                <th style="padding:10px; color:#a0a0a0; text-align:left; font-size:12px; text-transform:uppercase;">Retention Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for member in churn_data.at_risk_members %}
+                                            <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                                                <td style="padding:10px; color:#fff; font-weight:600;">{{ member.name }}</td>
+                                                <td style="padding:10px;">
+                                                    {% if member.risk_level == 'High' %}
+                                                        <span style="background:rgba(245,54,92,0.2); color:#f5365c; padding:3px 10px; border-radius:20px; font-size:12px; font-weight:700;">{{ member.risk_probability }}% · High</span>
+                                                    {% elif member.risk_level == 'Medium' %}
+                                                        <span style="background:rgba(255,214,0,0.15); color:#ffd600; padding:3px 10px; border-radius:20px; font-size:12px; font-weight:700;">{{ member.risk_probability }}% · Medium</span>
+                                                    {% else %}
+                                                        <span style="background:rgba(45,206,137,0.2); color:#2dce89; padding:3px 10px; border-radius:20px; font-size:12px; font-weight:700;">{{ member.risk_probability }}% · Low</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td style="padding:10px; color:#ccc;">{{ member.days_inactive }}</td>
+                                                <td style="padding:10px; color:#ccc; font-size:13px;">{{ member.recommendation }}</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr><td colspan="4" style="padding:20px; text-align:center; color:#a0a0a0;">No churn data available.</td></tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Stripe Payment Gateway Row -->
+            <div class="row mb-5">
+                <div class="col-lg-12">
+                    <div style="background: linear-gradient(135deg, #1c1c2e, #28273c); border-radius: 12px; padding: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); border: 1px solid rgba(94, 114, 228, 0.3);">
+                        <div class="row align-items-center">
+                            <div class="col-md-7 mb-3 mb-md-0">
+                                <h4 style="color: #fff; font-family: 'Oswald', sans-serif; margin-bottom: 10px;">
+                                    <i class="fa fa-cc-stripe" style="color: #6772e5; font-size: 28px;"></i> Stripe Integrated Payment Gateway
+                                </h4>
+                                <p style="color: #a0a0a0; font-size: 14px; margin-bottom: 5px;">
+                                    Process instant membership renewals and class payments securely with Stripe.
+                                </p>
+                                
+                            </div>
+                            <div class="col-md-5">
+                                <form id="stripePaymentForm" onsubmit="handleStripeSubmit(event)" style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);">
+                                    <div class="form-group mb-2">
+                                        <input type="text" id="stripeMemberName" class="form-control form-control-sm" placeholder="Member Full Name" required style="background: #141421; color: #fff; border: 1px solid #333;">
+                                    </div>
+                                    <div class="form-group mb-2">
+                                        <select id="stripeMembershipSelect" class="form-control form-control-sm" style="background: #141421; color: #fff; border: 1px solid #333;" onchange="updateStripeAmount()">
+                                            <option value="" data-amount="1200">Basic Plan - ₹1,200</option>
+                                            <option value="" data-amount="2500">Premium Plan - ₹2,500</option>
+                                            <option value="" data-amount="4000">Elite Plan - ₹4,000</option>
+                                            <option value="" data-amount="900">Student Plan - ₹900</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <input type="text" class="form-control form-control-sm" placeholder="Card: 4242 •••• •••• 4242 (Stripe Test)" value="4242 •••• •••• 4242" readonly style="background: #141421; color: #6772e5; border: 1px solid #333; font-family: monospace;">
+                                    </div>
+                                    <button type="submit" id="stripePayBtn" class="btn btn-block btn-sm" style="background: #6772e5; color: white; font-weight: 600; border-radius: 6px;">
+                                        <i class="fa fa-lock"></i> Pay via Stripe
+                                    </button>
+                                    <div id="stripeAlert" class="mt-2 text-center" style="font-size: 13px; display: none;"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payments Table -->
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <div style="background: #1c1c2e; border-radius: 12px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); overflow-x: auto;">
+                        <h4 style="color: #fff; font-family: 'Oswald', sans-serif; margin-bottom: 20px;">
+                            <i class="fa fa-list" style="color: #fb6340;"></i> Recent Transactions
+                        </h4>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid rgba(255,255,255,0.1);">
+                                    <th style="padding: 12px; color: #a0a0a0; text-align: left; font-size: 13px; text-transform: uppercase;">Member</th>
+                                    <th style="padding: 12px; color: #a0a0a0; text-align: left; font-size: 13px; text-transform: uppercase;">Plan</th>
+                                    <th style="padding: 12px; color: #a0a0a0; text-align: left; font-size: 13px; text-transform: uppercase;">Amount</th>
+                                    <th style="padding: 12px; color: #a0a0a0; text-align: left; font-size: 13px; text-transform: uppercase;">Date</th>
+                                    <th style="padding: 12px; color: #a0a0a0; text-align: left; font-size: 13px; text-transform: uppercase;">Method</th>
+                                    <th style="padding: 12px; color: #a0a0a0; text-align: left; font-size: 13px; text-transform: uppercase;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for payment in payments %}
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding: 12px; color: #fff;">{{ payment.member_name }}</td>
+                                    <td style="padding: 12px; color: #ccc;">{{ payment.membership.name|default:"N/A" }}</td>
+                                    <td style="padding: 12px; color: #2dce89; font-weight: 600;">₹{{ payment.amount }}</td>
+                                    <td style="padding: 12px; color: #ccc;">{{ payment.payment_date|date:"d M Y" }}</td>
+                                    <td style="padding: 12px; color: #ccc;">{{ payment.method }}</td>
+                                    <td style="padding: 12px;">
+                                        {% if payment.status == 'Completed' %}
+                                            <span style="background: rgba(45, 206, 137, 0.2); color: #2dce89; padding: 4px 12px; border-radius: 20px; font-size: 12px;">{{ payment.status }}</span>
+                                        {% elif payment.status == 'Pending' %}
+                                            <span style="background: rgba(241, 196, 15, 0.2); color: #f1c40f; padding: 4px 12px; border-radius: 20px; font-size: 12px;">{{ payment.status }}</span>
+                                        {% else %}
+                                            <span style="background: rgba(231, 76, 60, 0.2); color: #e74c3c; padding: 4px 12px; border-radius: 20px; font-size: 12px;">{{ payment.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" style="padding: 30px; text-align: center; color: #a0a0a0;">No payment records found. Run <code>python manage.py generate_sample_data</code> to add demo data.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Payment Dashboard Section End -->
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        Chart.defaults.color = '#a0a0a0';
+        Chart.defaults.font.family = "'Muli', sans-serif";
+
+        // Revenue Trend
+        new Chart(document.getElementById('revenueChart'), {
+            type: 'line',
+            data: {
+                labels: {{ revenue_labels|safe }},
+                datasets: [{
+                    label: 'Revenue (₹)',
+                    data: {{ revenue_data|safe }},
+                    borderColor: 'rgba(45, 206, 137, 1)',
+                    backgroundColor: 'rgba(45, 206, 137, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(45, 206, 137, 1)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Payment Methods
+        new Chart(document.getElementById('methodChart'), {
+            type: 'doughnut',
+            data: {
+                labels: {{ method_labels|safe }},
+                datasets: [{
+                    data: {{ method_data|safe }},
+                    backgroundColor: {{ method_colors|safe }},
+                    borderWidth: 0,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'bottom', labels: { padding: 10, usePointStyle: true, font: { size: 11 } } } },
+                cutout: '60%'
+            }
+        });
+
+        // Membership Churn Risk Distribution
+        (function () {
+            const churnCanvas = document.getElementById('churnRiskChart');
+            if (!churnCanvas) return;
+            new Chart(churnCanvas, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Low', 'Medium', 'High'],
+                    datasets: [{
+                        data: [{{ churn_data.risk_distribution.Low }}, {{ churn_data.risk_distribution.Medium }}, {{ churn_data.risk_distribution.High }}],
+                        backgroundColor: ['rgba(45, 206, 137, 0.85)', 'rgba(255, 214, 0, 0.85)', 'rgba(245, 54, 92, 0.85)'],
+                        borderWidth: 0,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'bottom', labels: { padding: 10, usePointStyle: true, font: { size: 11 } } } },
+                    cutout: '60%'
+                }
+            });
+        })();
+
+        // Stripe Payment Handler
+        async function handleStripeSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('stripeMemberName').value;
+            const select = document.getElementById('stripeMembershipSelect');
+            const selectedOpt = select.options[select.selectedIndex];
+            const amount = selectedOpt.getAttribute('data-amount') || 1200;
+            const alertDiv = document.getElementById('stripeAlert');
+            const payBtn = document.getElementById('stripePayBtn');
+
+            payBtn.disabled = true;
+            payBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Processing Stripe Card...';
+            alertDiv.style.display = 'block';
+            alertDiv.className = 'mt-2 text-center text-info';
+            alertDiv.innerText = 'Connecting to Stripe Payment Gateway...';
+
+            try {
+                const response = await fetch('/api/stripe-payment/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        member_name: name,
+                        amount: parseFloat(amount),
+                        stripe_token: 'tok_visa_' + Date.now()
+                    })
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    alertDiv.className = 'mt-2 text-center text-success font-weight-bold';
+                    alertDiv.innerText = '✓ ' + data.message;
+                    setTimeout(() => { window.location.reload(); }, 1800);
+                } else {
+                    alertDiv.className = 'mt-2 text-center text-danger';
+                    alertDiv.innerText = '✕ Error: ' + data.message;
+                    payBtn.disabled = false;
+                    payBtn.innerHTML = '<i class="fa fa-lock"></i> Pay via Stripe';
+                }
+            } catch (err) {
+                alertDiv.className = 'mt-2 text-center text-danger';
+                alertDiv.innerText = '✕ Payment error: ' + err.message;
+                payBtn.disabled = false;
+                payBtn.innerHTML = '<i class="fa fa-lock"></i> Pay via Stripe';
+            }
+        }
+    </script>
+
+{% endblock content %}
+

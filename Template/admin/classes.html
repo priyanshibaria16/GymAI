@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Manage Classes | IronPeak Fitness Studio{% endblock %}
+
+{% block content %}
+<section class="breadcrumb-section set-bg" data-setbg="{% static 'img/breadcrumb-bg.jpg' %}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="breadcrumb-text">
+                    <h2>Class Management</h2>
+                    <div class="bt-option">
+                        <a href="{% url 'admin-dashboard' %}">Admin</a>
+                        <span>Manage Classes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="spad" style="background: #0f0f1a; min-height: 80vh;">
+    <div class="container">
+        {% if messages %}
+        <div class="mb-3">
+            {% for message in messages %}
+            <div class="alert" style="background: {% if message.tags == 'error' %}rgba(245,54,92,0.12){% else %}rgba(45,206,137,0.12){% endif %}; border:1px solid {% if message.tags == 'error' %}rgba(245,54,92,0.4){% else %}rgba(45,206,137,0.4){% endif %}; color:{% if message.tags == 'error' %}#f5365c{% else %}#2dce89{% endif %}; border-radius:10px; font-size:13px;">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Page header -->
+        <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+            <h4 style="color:#fff; font-family:'Oswald',sans-serif; margin:0; letter-spacing:1px;">
+                <i class="fa fa-calendar-check-o" style="color:#5e72e4; margin-right:8px;"></i>All Classes ({{ total_classes }})
+            </h4>
+            <a href="{% url 'admin-class-add' %}" class="ip-add-class-btn"><i class="fa fa-plus"></i> Add New Class</a>
+        </div>
+
+        <!-- Search -->
+        <form method="GET" class="mb-4" style="max-width:420px;">
+            <div class="d-flex gap-2">
+                <input type="text" name="q" value="{{ search_query }}" class="ip-input" placeholder="Search by class, trainer or day...">
+                <button type="submit" class="btn px-3" style="background:#5e72e4; color:#fff; border-radius:10px;"><i class="fa fa-search"></i></button>
+            </div>
+        </form>
+
+        <!-- Table -->
+        <div style="background: linear-gradient(145deg, #1a1a2e, #16213e); border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,0.07);">
+            <div class="table-responsive">
+                <table class="table ip-table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Class</th>
+                            <th>Assigned Trainer</th>
+                            <th>Schedule</th>
+                            <th>Enrolled</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in class_rows %}
+                        <tr>
+                            <td>
+                                <div style="color:#fff; font-weight:600;">{{ row.cls.name }}</div>
+                                {% if row.cls.description %}<div style="color:#707080; font-size:12px;">{{ row.cls.description|truncatechars:60 }}</div>{% endif %}
+                            </td>
+                            <td>
+                                {% if row.cls.assigned_trainer %}
+                                    <span class="ip-trainer-badge"><i class="fa fa-user"></i> {{ row.cls.assigned_trainer.name }}</span>
+                                {% else %}
+                                    <span style="color:#f39c12; font-size:12px;"><i class="fa fa-user-times"></i> {{ row.cls.trainer|default:"Unassigned" }}</span>
+                                {% endif %}
+                            </td>
+                            <td style="color:#c8c8d4; font-size:13px;">
+                                <i class="fa fa-calendar-o" style="color:#5e72e4;"></i> {{ row.cls.schedule_day }}
+                                &nbsp;·&nbsp; <i class="fa fa-clock-o" style="color:#2dce89;"></i> {{ row.cls.schedule_time|time:"H:i" }}
+                                <div style="color:#707080; font-size:11px;">{{ row.cls.duration_minutes }} min</div>
+                            </td>
+                            <td>
+                                <span style="background:rgba(94,114,228,0.15); color:#8b9bff; padding:3px 10px; border-radius:20px; font-size:12px; font-weight:700;">
+                                    {{ row.enrolled }}/{{ row.cls.capacity }}
+                                </span>
+                            </td>
+                            <td class="text-right">
+                                <a href="{% url 'admin-class-edit' row.cls.id %}" class="ip-act-btn ip-act-edit" title="Edit / assign trainer"><i class="fa fa-pencil"></i></a>
+                                <form method="POST" action="{% url 'admin-class-delete' row.cls.id %}" style="display:inline;" onsubmit="return confirm('Delete class \'{{ row.cls.name }}\'? This also removes its bookings.');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="ip-act-btn ip-act-del" title="Delete"><i class="fa fa-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="5" style="text-align:center; padding:40px; color:#707080;">No classes yet. Click <strong>Add New Class</strong> to create one.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="mt-4">
+            <a href="{% url 'admin-dashboard' %}" style="color:#a0a0a0; text-decoration:none; font-size:13px;"><i class="fa fa-arrow-left"></i> Back to Admin Dashboard</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.ip-add-class-btn {
+    background: linear-gradient(135deg, #2dce89, #2dcecc);
+    color: #fff; font-weight: 700; padding: 10px 18px; border-radius: 10px;
+    text-decoration: none; font-size: 14px; letter-spacing: .5px;
+    box-shadow: 0 4px 15px rgba(45,206,137,0.35); transition: all .2s;
+}
+.ip-add-class-btn:hover { transform: translateY(-2px); color:#fff; text-decoration:none; box-shadow:0 8px 22px rgba(45,206,137,0.5); }
+.ip-table { color:#ccc; }
+.ip-table thead th { background: rgba(255,255,255,0.04); color:#a0a0b0; text-transform:uppercase; font-size:11px; letter-spacing:.8px; border:none; padding:14px 18px; }
+.ip-table tbody td { border-top:1px solid rgba(255,255,255,0.05); padding:14px 18px; vertical-align:middle; }
+.ip-table .text-right { text-align:right; }
+.ip-trainer-badge { background:rgba(45,206,137,0.15); color:#2dce89; padding:3px 10px; border-radius:20px; font-size:12px; font-weight:600; }
+.ip-input { width:100%; background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:11px 14px; color:#fff; font-size:14px; outline:none; }
+.ip-input:focus { border-color:#5e72e4; box-shadow:0 0 0 3px rgba(94,114,228,0.15); }
+.ip-act-btn { display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:8px; border:none; cursor:pointer; text-decoration:none; font-size:13px; transition:all .2s; }
+.ip-act-edit { background:rgba(94,114,228,0.18); color:#8b9bff; }
+.ip-act-edit:hover { background:rgba(94,114,228,0.35); }
+.ip-act-del { background:rgba(245,54,92,0.18); color:#f5365c; }
+.ip-act-del:hover { background:rgba(245,54,92,0.35); }
+</style>
+{% endblock %}

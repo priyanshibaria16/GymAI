@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Add New Member | IronPeak Fitness Studio{% endblock %}
+
+{% block content %}
+<section class="breadcrumb-section set-bg" data-setbg="{% static 'img/breadcrumb-bg.jpg' %}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="breadcrumb-text">
+                    <h2>Add New Member</h2>
+                    <div class="bt-option">
+                        <a href="{% url 'index.html' %}">Home</a>
+                        <a href="{% url 'admin-user-list' %}">User Management</a>
+                        <span>Add Member</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="spad" style="background: #0f0f1a; min-height: 80vh;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+
+                <!-- Card -->
+                <div style="background: linear-gradient(145deg, #1a1a2e, #16213e); border-radius: 16px; padding: 40px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); border: 1px solid rgba(245,54,92,0.15);">
+
+                    <!-- Header -->
+                    <div class="d-flex align-items-center mb-4" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px;">
+                        <div style="background: linear-gradient(135deg, #f5365c, #f56036); border-radius: 12px; width: 50px; height: 50px; display:flex; align-items:center; justify-content:center; margin-right: 15px; flex-shrink: 0;">
+                            <i class="fa fa-user-plus" style="color:#fff; font-size: 20px;"></i>
+                        </div>
+                        <div>
+                            <h3 style="color: #fff; font-family: 'Oswald', sans-serif; margin: 0; font-size: 22px;">CREATE NEW ACCOUNT</h3>
+                            <p style="color: #a0a0a0; margin: 0; font-size: 13px;">Add a member, trainer, or admin to the system</p>
+                        </div>
+                        <a href="{% url 'admin-user-list' %}" class="btn btn-sm ms-auto" style="background: rgba(255,255,255,0.08); color: #ccc; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px;">
+                            <i class="fa fa-arrow-left me-1"></i> Back
+                        </a>
+                    </div>
+
+                    <form method="POST" action="{% url 'admin-add-member' %}" id="addMemberForm">
+                        {% csrf_token %}
+
+                        <!-- Name Row -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label style="color: #a0a0a0; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 6px;">
+                                    <i class="fa fa-user me-1" style="color: #f5365c;"></i> First Name
+                                </label>
+                                <input type="text" name="first_name" class="ip-input" placeholder="First Name"
+                                       value="{{ post_data.first_name|default:'' }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label style="color: #a0a0a0; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 6px;">
+                                    <i class="fa fa-user me-1" style="color: #f5365c;"></i> Last Name
+                                </label>
+                                <input type="text" name="last_name" class="ip-input" placeholder="Last Name"
+                                       value="{{ post_data.last_name|default:'' }}">
+                            </div>
+                        </div>
+
+                        <!-- Username & Email -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label style="color: #a0a0a0; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 6px;">
+                                    <i class="fa fa-at me-1" style="color: #5e72e4;"></i> Username <span style="color:#f5365c;">*</span>
+                                </label>
+                                <input type="text" name="username" class="ip-input" placeholder="Unique username" required
+                                       value="{{ post_data.username|default:'' }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label style="color: #a0a0a0; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 6px;">
+                                    <i class="fa fa-envelope me-1" style="color: #5e72e4;"></i> Email Address
+                                </label>
+                                <input type="email" name="email" class="ip-input" placeholder="email@example.com"
+                                       value="{{ post_data.email|default:'' }}">
+                            </div>
+                        </div>
+
+                        <!-- Phone & Role -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label style="color: #a0a0a0; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 6px;">
+                                    <i class="fa fa-phone me-1" style="color: #2dce89;"></i> Phone Number
+                                </label>
+                                <input type="text" name="phone" class="ip-input" placeholder="+91 XXXXX XXXXX"
+                                       value="{{ post_data.phone|default:'' }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label style="color: #a0a0a0; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 6px;">
+                                    <i class="fa fa-shield me-1" style="color: #f39c12;"></i> Role <span style="color:#f5365c;">*</span>
+                                </label>
+                                <select name="role" class="ip-input" required>
+                                    {% for value, label in roles %}
+                                    <option value="{{ value }}" {% if post_data.role == value %}selected{% elif not post_data and value == 'MEMBER' %}selected{% endif %}>
+                                        {{ label }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Password Row -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label style="color: #a0a0a0; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 6px;">
+                                    <i class="fa fa-lock me-1" style="color: #f5365c;"></i> Password <span style="color:#f5365c;">*</span>
+                                </label>
+                                <div style="position: relative;">
+                                    <input type="password" name="password" id="passwordInput" class="ip-input" placeholder="Min. 8 characters" required>
+                                    <span onclick="togglePwd('passwordInput', this)" style="position:absolute; right:14px; top:50%; transform:translateY(-50%); cursor:pointer; color:#a0a0a0; font-size:14px;">
+                                        <i class="fa fa-eye"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label style="color: #a0a0a0; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 6px;">
+                                    <i class="fa fa-lock me-1" style="color: #f5365c;"></i> Confirm Password <span style="color:#f5365c;">*</span>
+                                </label>
+                                <div style="position: relative;">
+                                    <input type="password" name="confirm_password" id="confirmInput" class="ip-input" placeholder="Repeat password" required>
+                                    <span onclick="togglePwd('confirmInput', this)" style="position:absolute; right:14px; top:50%; transform:translateY(-50%); cursor:pointer; color:#a0a0a0; font-size:14px;">
+                                        <i class="fa fa-eye"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Info box -->
+                        <div style="background: rgba(94,114,228,0.1); border-left: 3px solid #5e72e4; border-radius: 8px; padding: 12px 16px; margin-bottom: 24px;">
+                            <p style="color: #a0b0e0; font-size: 12px; margin: 0;">
+                                <i class="fa fa-info-circle me-1"></i>
+                                The new user will be able to log in immediately. Advise them to change their password after first login via <strong>Profile → Change Password</strong>.
+                            </p>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-3">
+                            <button type="submit" id="submitBtn"
+                                style="flex: 1; padding: 14px; background: linear-gradient(135deg, #f5365c, #f56036); color: white; border: none; border-radius: 10px; font-family: 'Oswald', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 1px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase;">
+                                <i class="fa fa-user-plus me-2"></i> CREATE ACCOUNT
+                            </button>
+                            <a href="{% url 'admin-user-list' %}"
+                               style="flex: 0.4; padding: 14px; background: rgba(255,255,255,0.06); color: #ccc; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; font-size: 14px; text-align: center; text-decoration: none; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center;">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.ip-input {
+    width: 100%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: #ffffff;
+    font-size: 14px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+}
+.ip-input:focus {
+    border-color: #f5365c;
+    box-shadow: 0 0 0 3px rgba(245,54,92,0.15);
+    background: rgba(255,255,255,0.09);
+}
+.ip-input::placeholder { color: #606070; }
+.ip-input option { background: #1a1a2e; color: #fff; }
+
+#submitBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(245,54,92,0.4);
+}
+</style>
+
+<script>
+function togglePwd(inputId, icon) {
+    const input = document.getElementById(inputId);
+    const isText = input.type === 'text';
+    input.type = isText ? 'password' : 'text';
+    icon.innerHTML = isText ? '<i class="fa fa-eye"></i>' : '<i class="fa fa-eye-slash"></i>';
+}
+
+document.getElementById('addMemberForm').addEventListener('submit', function() {
+    const btn = document.getElementById('submitBtn');
+    btn.innerHTML = '<i class="fa fa-spinner fa-spin me-2"></i> Creating...';
+    btn.disabled = true;
+});
+</script>
+{% endblock %}

@@ -1,0 +1,314 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-section set-bg" data-setbg="{% static 'img/breadcrumb-bg.jpg' %}">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb-text">
+                        <h2>Member Progress</h2>
+                        <div class="bt-option">
+                            <a href="{% url 'index.html' %}">Home</a>
+                            <span>Progress Tracker</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Progress Section Begin -->
+    <section class="spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title">
+                        <span>Track Your Journey</span>
+                        <h2>MEMBER PROGRESS TRACKER</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Member Filter -->
+            <div class="row mb-4">
+                <div class="col-lg-6">
+                    <form method="GET" action="{% url 'member-progress' %}" style="display: flex; gap: 10px;">
+                        <select name="member" style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 10px 15px; border-radius: 8px; font-family: 'Muli', sans-serif;">
+                            <option value="">-- All Members --</option>
+                            {% for member in unique_members %}
+                                <option value="{{ member }}" {% if member == selected_member %}selected{% endif %}>{{ member }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" style="background: linear-gradient(135deg, #f36100, #f5365c); color: white; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-weight: 600;">Filter</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="row mb-5">
+                <div class="col-lg-4 mb-4">
+                    <div style="background: #1c1c2e; border-radius: 12px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                        <h4 style="color: #fff; font-family: 'Oswald', sans-serif; margin-bottom: 20px;">
+                            <i class="fa fa-line-chart" style="color: #2dce89;"></i> Weight Trend
+                        </h4>
+                        <canvas id="weightChart" height="200"></canvas>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div style="background: #1c1c2e; border-radius: 12px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                        <h4 style="color: #fff; font-family: 'Oswald', sans-serif; margin-bottom: 20px;">
+                            <i class="fa fa-bullseye" style="color: #5e72e4;"></i> Body Measurements
+                        </h4>
+                        <canvas id="radarChart" height="200"></canvas>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div style="background: #1c1c2e; border-radius: 12px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                        <h4 style="color: #fff; font-family: 'Oswald', sans-serif; margin-bottom: 20px;">
+                            <i class="fa fa-bar-chart" style="color: #f5365c;"></i> Workout Volume
+                        </h4>
+                        <canvas id="volumeChart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Forms Row -->
+            <div class="row mb-5">
+                <!-- Add Workout Form -->
+                <div class="col-lg-6 mb-4">
+                    <div style="background: #1c1c2e; border-radius: 12px; padding: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                        <h4 style="color: #fff; font-family: 'Oswald', sans-serif; margin-bottom: 20px;">
+                            <i class="fa fa-plus-circle" style="color: #2dce89;"></i> LOG WORKOUT
+                        </h4>
+                        <form method="POST" action="{% url 'add-workout' %}">
+                            {% csrf_token %}
+                            <div class="chart-calculate-form">
+                                <div class="row">
+                                    {% for field in workout_form %}
+                                    <div class="col-sm-6 mb-2">
+                                        <label style="color: #a0a0a0; font-size: 12px; text-transform: uppercase; margin-bottom: 4px; display: block;">{{ field.label }}</label>
+                                        {{ field }}
+                                    </div>
+                                    {% endfor %}
+                                    <div class="col-lg-12 mt-2">
+                                        <button type="submit" style="background: linear-gradient(135deg, #2dce89, #2dcecc); border: none; color: white; padding: 12px 30px; border-radius: 25px; cursor: pointer; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Add Workout</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Add Body Metrics Form -->
+                <div class="col-lg-6 mb-4">
+                    <div style="background: #1c1c2e; border-radius: 12px; padding: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                        <h4 style="color: #fff; font-family: 'Oswald', sans-serif; margin-bottom: 20px;">
+                            <i class="fa fa-plus-circle" style="color: #5e72e4;"></i> RECORD BODY METRICS
+                        </h4>
+                        <form method="POST" action="{% url 'add-metrics' %}">
+                            {% csrf_token %}
+                            <div class="chart-calculate-form">
+                                <div class="row">
+                                    {% for field in metrics_form %}
+                                    <div class="col-sm-6 mb-2">
+                                        <label style="color: #a0a0a0; font-size: 12px; text-transform: uppercase; margin-bottom: 4px; display: block;">{{ field.label }}</label>
+                                        {{ field }}
+                                    </div>
+                                    {% endfor %}
+                                    <div class="col-lg-12 mt-2">
+                                        <button type="submit" style="background: linear-gradient(135deg, #5e72e4, #825ee4); border: none; color: white; padding: 12px 30px; border-radius: 25px; cursor: pointer; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Save Metrics</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tables Row -->
+            <div class="row">
+                <!-- Workout Log Table -->
+                <div class="col-lg-7 mb-4">
+                    <div style="background: #1c1c2e; border-radius: 12px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); overflow-x: auto;">
+                        <h4 style="color: #fff; font-family: 'Oswald', sans-serif; margin-bottom: 20px;">
+                            <i class="fa fa-list" style="color: #fb6340;"></i> Recent Workout Logs
+                        </h4>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid rgba(255,255,255,0.1);">
+                                    <th style="padding: 10px; color: #a0a0a0; text-align: left; font-size: 12px; text-transform: uppercase;">Member</th>
+                                    <th style="padding: 10px; color: #a0a0a0; text-align: left; font-size: 12px; text-transform: uppercase;">Exercise</th>
+                                    <th style="padding: 10px; color: #a0a0a0; text-align: center; font-size: 12px; text-transform: uppercase;">Sets</th>
+                                    <th style="padding: 10px; color: #a0a0a0; text-align: center; font-size: 12px; text-transform: uppercase;">Reps</th>
+                                    <th style="padding: 10px; color: #a0a0a0; text-align: center; font-size: 12px; text-transform: uppercase;">Weight</th>
+                                    <th style="padding: 10px; color: #a0a0a0; text-align: left; font-size: 12px; text-transform: uppercase;">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for log in workout_logs %}
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding: 10px; color: #fff;">{{ log.member_name }}</td>
+                                    <td style="padding: 10px; color: #ccc;">{{ log.exercise }}</td>
+                                    <td style="padding: 10px; color: #2dce89; text-align: center;">{{ log.sets }}</td>
+                                    <td style="padding: 10px; color: #5e72e4; text-align: center;">{{ log.reps }}</td>
+                                    <td style="padding: 10px; color: #f5365c; text-align: center;">{{ log.weight_used }}kg</td>
+                                    <td style="padding: 10px; color: #a0a0a0;">{{ log.date|date:"d M" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="6" style="padding: 20px; text-align: center; color: #a0a0a0;">No workout logs yet.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Body Metrics Table -->
+                <div class="col-lg-5 mb-4">
+                    <div style="background: #1c1c2e; border-radius: 12px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); overflow-x: auto;">
+                        <h4 style="color: #fff; font-family: 'Oswald', sans-serif; margin-bottom: 20px;">
+                            <i class="fa fa-user" style="color: #8965e0;"></i> Body Metrics History
+                        </h4>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid rgba(255,255,255,0.1);">
+                                    <th style="padding: 10px; color: #a0a0a0; font-size: 12px; text-transform: uppercase;">Member</th>
+                                    <th style="padding: 10px; color: #a0a0a0; font-size: 12px; text-transform: uppercase;">Weight</th>
+                                    <th style="padding: 10px; color: #a0a0a0; font-size: 12px; text-transform: uppercase;">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for m in body_metrics %}
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding: 10px; color: #fff;">{{ m.member_name }}</td>
+                                    <td style="padding: 10px; color: #2dce89;">{{ m.body_weight }}kg</td>
+                                    <td style="padding: 10px; color: #a0a0a0;">{{ m.date|date:"d M Y" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="3" style="padding: 20px; text-align: center; color: #a0a0a0;">No body metrics yet.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Progress Section End -->
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        Chart.defaults.color = '#a0a0a0';
+        Chart.defaults.font.family = "'Muli', sans-serif";
+
+        // Weight Trend Line Chart
+        new Chart(document.getElementById('weightChart'), {
+            type: 'line',
+            data: {
+                labels: {{ weight_labels|safe }},
+                datasets: [{
+                    label: 'Weight (kg)',
+                    data: {{ weight_data|safe }},
+                    borderColor: 'rgba(45, 206, 137, 1)',
+                    backgroundColor: 'rgba(45, 206, 137, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(45, 206, 137, 1)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { grid: { color: 'rgba(255,255,255,0.05)' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Body Measurements Radar Chart
+        new Chart(document.getElementById('radarChart'), {
+            type: 'radar',
+            data: {
+                labels: {{ radar_labels|safe }},
+                datasets: [{
+                    label: 'Measurements',
+                    data: {{ radar_data|safe }},
+                    borderColor: 'rgba(94, 114, 228, 1)',
+                    backgroundColor: 'rgba(94, 114, 228, 0.2)',
+                    pointBackgroundColor: 'rgba(94, 114, 228, 1)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    r: {
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        angleLines: { color: 'rgba(255,255,255,0.1)' },
+                        pointLabels: { color: '#ccc' },
+                        ticks: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Workout Volume Bar Chart
+        new Chart(document.getElementById('volumeChart'), {
+            type: 'bar',
+            data: {
+                labels: {{ exercise_labels|safe }},
+                datasets: [{
+                    label: 'Volume (sets × reps × weight)',
+                    data: {{ exercise_data|safe }},
+                    backgroundColor: [
+                        'rgba(245, 54, 92, 0.7)',
+                        'rgba(45, 206, 137, 0.7)',
+                        'rgba(94, 114, 228, 0.7)',
+                        'rgba(251, 99, 64, 0.7)',
+                        'rgba(17, 205, 239, 0.7)',
+                        'rgba(137, 101, 224, 0.7)',
+                        'rgba(255, 214, 0, 0.7)',
+                        'rgba(245, 54, 92, 0.5)',
+                    ],
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                indexAxis: 'y',
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
+                    y: { grid: { display: false } }
+                }
+            }
+        });
+    </script>
+
+    <style>
+        .chart-calculate-form input,
+        .chart-calculate-form select {
+            background: rgba(255,255,255,0.05) !important;
+            border: 1px solid rgba(255,255,255,0.15) !important;
+            color: #fff !important;
+            padding: 10px 15px;
+            border-radius: 6px;
+            width: 100%;
+            font-family: 'Muli', sans-serif;
+        }
+        .chart-calculate-form select option {
+            background: #1c1c2e;
+            color: #fff;
+        }
+    </style>
+
+{% endblock content %}
