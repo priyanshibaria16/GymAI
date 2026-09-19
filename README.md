@@ -133,6 +133,34 @@ IronPeak Fitness Studio solves real-world gym management challenges by combining
 - **Input Features**: `[attendance_per_wk, days_inactive, tenure_months, pending_dues_flag]`.
 - **Output**: Risk probability percentage, Risk Level (*Low, Medium, High*), and targeted retention recommendations (e.g., discount offers or personal trainer consultations).
 
+#### 🧬 Model Confusion Matrix (Churn Classifier)
+
+Performance was measured with **5-fold stratified cross-validation** on the model's
+150-member training cohort (`RandomForestClassifier(n_estimators=50)`, `random_state=42`).
+The **positive class is “Will churn”**, since detecting at-risk members is the goal.
+
+| Actual \ Predicted | Retained (0) | Will Churn (1) | Total |
+|---|---|---|---|
+| **Retained (0)** | **TN** 62 | **FP** 6 | 68 |
+| **Will Churn (1)** | **FN** 12 | **TP** 70 | 82 |
+| **Total** | 74 | 76 | 150 |
+
+**Derived metrics**
+
+| Metric | Formula | Value |
+|---|---|---|
+| **Accuracy** | (TP + TN) / Total | **88.0%** |
+| **Precision** | TP / (TP + FP) | **92.1%** |
+| **Recall (Sensitivity)** | TP / (TP + FN) | **85.4%** |
+| **F1-Score** | 2 · P · R / (P + R) | **88.6%** |
+| **Specificity** | TN / (TN + FP) | **91.2%** |
+
+> 📌 **Interpretation:** The high **precision (92.1%)** means that when the model flags a
+> member as “will churn”, it is correct ~9 out of 10 times — so retention outreach effort is
+> rarely wasted. The **recall (85.4%)** confirms it still catches the large majority of true
+> churners. *Note: the in-sample fit reported in the app (`94.2%`) is measured on the full
+> training set; the table above is the more realistic out-of-sample cross-validated result.*
+
 ### 2. NLP Chatbot Engine (`myapp/ai_engine/nlp_chatbot.py`)
 - **Vectorization**: `TfidfVectorizer` converts natural language queries into term-frequency vectors.
 - **Similarity Measure**: `cosine_similarity` compares input vectors against intent knowledge base embeddings.
